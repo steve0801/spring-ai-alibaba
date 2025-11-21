@@ -36,6 +36,7 @@ import static com.alibaba.cloud.ai.graph.agent.tools.ToolContextConstants.AGENT_
  */
 public class WriteTodosTool implements BiFunction<WriteTodosTool.Request, ToolContext, WriteTodosTool.Response> {
 	public static final String DEFAULT_TOOL_DESCRIPTION = """
+			// 定义工具的默认描述信息，详细说明了何时以及如何使用待办事项工具
 			Use this tool to create and manage a structured task list for your current work session. This helps you track progress, organize complex tasks, and demonstrate thoroughness to the user.
 			
 			Only use this tool if you think it will be helpful in staying organized. If the user's request is trivial and takes less than 3 steps, it is better to NOT use this tool and just do the task directly.
@@ -97,55 +98,71 @@ public class WriteTodosTool implements BiFunction<WriteTodosTool.Request, ToolCo
 			Remember: If you only need to make a few tool calls to complete a task, and it is clear what you need to do, it is better to just do the task directly and NOT call this tool at all.
 			""";
 
+	// WriteTodosTool的无参构造函数
 	public WriteTodosTool() {
 	}
 
+	// 实现BiFunction接口的apply方法，用于处理待办事项请求
 	@Override
 	public Response apply(Request request, ToolContext toolContext) {
-		// Extract state from ToolContext
+		// 从ToolContext中提取上下文数据
 		Map<String, Object> contextData = toolContext.getContext();
+		// 从上下文数据中获取需要更新的状态信息
 		Map<String, Object> extraState = (Map<String, Object>)contextData.get(AGENT_STATE_FOR_UPDATE_CONTEXT_KEY);
 
-		// Update the state with todos
+		// 使用请求中的待办事项更新状态
 		extraState.put("todos", request.todos);
 
-		// Return the tool response message
+		// 返回工具响应消息
 		return new Response("Updated todo list to " + request.todos);
 	}
 
 
+	// 为Request记录类添加JSON类描述
 	@JsonClassDescription("Request to write or update todos")
+	// 定义待办事项请求参数的记录类
 	public record Request(
+			// 定义todos属性，标记为必需，包含待办事项列表
 			@JsonProperty(required = true, value = "todos")
+			// 为todos属性添加描述信息
 			@JsonPropertyDescription("List of todo items with content and status")
 			List<Todo> todos
 	) {}
 
+	// 定义响应结果的记录类
 	public record Response(String message) {}
 
+	// 创建Builder实例的静态方法
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	// 内部Builder类，用于构建WriteTodosTool的ToolCallback实例
 	public static class Builder {
 
+		// 工具名称，默认为"write_todos"
 		private String name = "write_todos";
 
+		// 工具描述信息，默认使用DEFAULT_TOOL_DESCRIPTION
 		private String description = DEFAULT_TOOL_DESCRIPTION;
 
+		// Builder的无参构造函数
 		public Builder() {
 		}
 
+		// 设置工具名称的方法
 		public Builder withName(String name) {
 			this.name = name;
 			return this;
 		}
 
+		// 设置工具描述的方法
 		public Builder withDescription(String description) {
 			this.description = description;
 			return this;
 		}
 
+		// 构建ToolCallback实例的方法
 		public ToolCallback build() {
 			return FunctionToolCallback.builder(name, new WriteTodosTool())
 				.description(description)

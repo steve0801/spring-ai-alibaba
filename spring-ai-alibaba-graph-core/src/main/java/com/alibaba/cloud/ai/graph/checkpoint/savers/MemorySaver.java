@@ -60,7 +60,8 @@ public class MemorySaver implements BaseCheckpointSaver {
 			return transformer.tryApply(
 					loadedCheckpoints(config, _checkpointsByThread.computeIfAbsent(threadId, k -> new LinkedList<>())));
 
-		} finally {
+		}
+		finally {
 			_lock.unlock();
 		}
 	}
@@ -80,7 +81,8 @@ public class MemorySaver implements BaseCheckpointSaver {
 				return true;
 			}
 			return false;
-		} finally {
+		}
+		finally {
 			_lock.unlock();
 		}
 	}
@@ -93,7 +95,8 @@ public class MemorySaver implements BaseCheckpointSaver {
 	public final Collection<Checkpoint> list(RunnableConfig config) {
 		try {
 			return loadOrInitCheckpoints(config, Collections::unmodifiableCollection);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -105,14 +108,15 @@ public class MemorySaver implements BaseCheckpointSaver {
 			return loadOrInitCheckpoints(config, checkpoints -> {
 				if (config.checkPointId().isPresent()) {
 					return config.checkPointId()
-							.flatMap(id -> checkpoints.stream()
-									.filter(checkpoint -> checkpoint.getId().equals(id))
-									.findFirst());
+						.flatMap(id -> checkpoints.stream()
+							.filter(checkpoint -> checkpoint.getId().equals(id))
+							.findFirst());
 				}
 				return getLast(checkpoints, config);
 
 			});
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -125,13 +129,13 @@ public class MemorySaver implements BaseCheckpointSaver {
 			if (config.checkPointId().isPresent()) { // Replace Checkpoint
 				String checkPointId = config.checkPointId().get();
 				int index = IntStream.range(0, checkpoints.size())
-						.filter(i -> checkpoints.get(i).getId().equals(checkPointId))
-						.findFirst()
-						.orElseThrow(() -> (new NoSuchElementException(
-								format("Checkpoint with id %s not found!", checkPointId))));
+					.filter(i -> checkpoints.get(i).getId().equals(checkPointId))
+					.findFirst()
+					.orElseThrow(() -> (new NoSuchElementException(
+							format("Checkpoint with id %s not found!", checkPointId))));
 				checkpoints.set(index, checkpoint);
 				updatedCheckpoint(config, checkpoints, checkpoint);
-				return RunnableConfig.builder(config).checkPointId(checkpoint.getId()).build();
+				return config;
 			}
 
 			checkpoints.push(checkpoint); // Add Checkpoint

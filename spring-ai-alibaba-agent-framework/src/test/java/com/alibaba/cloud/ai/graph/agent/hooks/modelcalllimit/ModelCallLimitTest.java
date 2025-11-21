@@ -43,21 +43,25 @@ public class ModelCallLimitTest {
 	private ChatModel chatModel;
 
 	@BeforeEach
+	// 在每个测试方法执行前运行的初始化方法
 	void setUp() {
-		// Create DashScopeApi instance using the API key from environment variable
+		// 使用环境变量中的API密钥创建DashScopeApi实例
 		DashScopeApi dashScopeApi = DashScopeApi.builder().apiKey(System.getenv("AI_DASHSCOPE_API_KEY")).build();
 
-		// Create DashScope ChatModel instance
+		// 创建DashScope ChatModel实例
 		this.chatModel = DashScopeChatModel.builder().dashScopeApi(dashScopeApi).build();
 	}
 
 	@Test
+	// 测试线程限制与错误行为的测试方法
 	public void testThreadLimitWithErrorBehavior() throws Exception {
+		// 创建ModelCallLimitHook实例，设置线程限制为1，退出行为为抛出错误
 		ModelCallLimitHook hook = ModelCallLimitHook.builder()
 				.threadLimit(1)
 				.exitBehavior(ModelCallLimitHook.ExitBehavior.ERROR)
 				.build();
 
+		// 创建ReactAgent实例，使用上面创建的hook
 		ReactAgent agent = createAgent(hook, "test-agent", chatModel);
 
 		// 第一次调用，执行第二次推理时报错
@@ -70,7 +74,9 @@ public class ModelCallLimitTest {
 		assertTrue(result2.isPresent(), "第二次调用应该返回结果而不是抛出异常");
 	}
 
+	// 创建ReactAgent的辅助方法
 	public ReactAgent createAgent(ModelCallLimitHook hook, String name, ChatModel model) throws GraphStateException {
+		// 使用ReactAgent构建器创建代理实例
 		return ReactAgent.builder()
 				.name(name)
 				.model(model)

@@ -97,33 +97,45 @@ public abstract class Agent {
 	}
 
 	public StateGraph getGraph() {
+		// 检查graph是否已初始化，如果未初始化则调用initGraph方法进行初始化
 		if (this.graph == null) {
 			try {
+				// 调用抽象方法initGraph来初始化图结构
 				this.graph = initGraph();
 			}
+			// 捕获图状态异常并转换为运行时异常抛出
 			catch (GraphStateException e) {
 				throw new RuntimeException(e);
 			}
 		}
+		// 返回已初始化的图结构
 		return this.graph;
 	}
 
+	// 同步方法，获取并编译图结构，确保线程安全
 	public synchronized CompiledGraph getAndCompileGraph() {
+		// 如果已编译的图结构存在，直接返回
 		if (compiledGraph != null) {
 			return compiledGraph;
 		}
 
+		// 获取图结构
 		StateGraph graph = getGraph();
 		try {
+			// 检查编译配置是否存在
 			if (this.compileConfig == null) {
+				// 如果编译配置为空，则使用默认配置编译图结构
 				this.compiledGraph = graph.compile();
 			}
+			// 如果编译配置存在，则使用指定配置编译图结构
 			else {
 				this.compiledGraph = graph.compile(this.compileConfig);
 			}
 		} catch (GraphStateException e) {
+			// 捕获图状态异常并转换为运行时异常抛出
 			throw new RuntimeException(e);
 		}
+		// 返回编译后的图结构
 		return this.compiledGraph;
 	}
 
@@ -133,9 +145,12 @@ public abstract class Agent {
 	 * @param input the agent input
 	 * @return a ScheduledAgentTask instance for managing the scheduled task
 	 */
+	// 使用触发器调度代理任务的方法
 	public ScheduledAgentTask schedule(Trigger trigger, Map<String, Object> input)
 			throws GraphStateException, GraphRunnerException {
+		// 构建调度配置对象
 		ScheduleConfig scheduleConfig = ScheduleConfig.builder().trigger(trigger).inputs(input).build();
+		// 调用重载的schedule方法
 		return schedule(scheduleConfig);
 	}
 
@@ -144,165 +159,253 @@ public abstract class Agent {
 	 * @param scheduleConfig the schedule configuration
 	 * @return a ScheduledAgentTask instance for managing the scheduled task
 	 */
+	// 使用调度配置调度代理任务的方法
 	public ScheduledAgentTask schedule(ScheduleConfig scheduleConfig) throws GraphStateException {
+		// 获取并编译图结构
 		CompiledGraph compiledGraph = getAndCompileGraph();
+		// 调用编译图的schedule方法进行任务调度
 		return compiledGraph.schedule(scheduleConfig);
 	}
 
+	// 获取当前状态的方法
 	public StateSnapshot getCurrentState(RunnableConfig config) throws GraphRunnerException {
+		// 调用编译图的getState方法获取当前状态
 		return compiledGraph.getState(config);
 	}
 
 	// ------------------- Invoke with OverAllState as return value -------------------
 
+	// 使用字符串消息调用代理的方法，返回整体状态
 	public Optional<OverAllState> invoke(String message) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doInvoke方法执行调用
 		return doInvoke(inputs, null);
 	}
 
+	// 使用字符串消息和配置调用代理的方法，返回整体状态
 	public Optional<OverAllState> invoke(String message, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doInvoke方法执行调用
 		return doInvoke(inputs, config);
 	}
 
+	// 使用用户消息调用代理的方法，返回整体状态
 	public Optional<OverAllState> invoke(UserMessage message) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doInvoke方法执行调用
 		return doInvoke(inputs, null);
 	}
 
+	// 使用用户消息和配置调用代理的方法，返回整体状态
 	public Optional<OverAllState> invoke(UserMessage message, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doInvoke方法执行调用
 		return doInvoke(inputs, config);
 	}
 
+	// 使用消息列表调用代理的方法，返回整体状态
 	public Optional<OverAllState> invoke(List<Message> messages) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(messages);
+		// 调用doInvoke方法执行调用
 		return doInvoke(inputs, null);
 	}
 
+	// 使用消息列表和配置调用代理的方法，返回整体状态
 	public Optional<OverAllState> invoke(List<Message> messages, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(messages);
+		// 调用doInvoke方法执行调用
 		return doInvoke(inputs, config);
 	}
 
 	// ------------------- Invoke  methods with Output as return value -------------------
 
+	// 使用字符串消息调用代理的方法，返回节点输出
 	public Optional<NodeOutput> invokeAndGetOutput(String message) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doInvokeAndGetOutput方法执行调用
 		return doInvokeAndGetOutput(inputs, null);
 	}
 
+	// 使用字符串消息和配置调用代理的方法，返回节点输出
 	public Optional<NodeOutput> invokeAndGetOutput(String message, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doInvokeAndGetOutput方法执行调用
 		return doInvokeAndGetOutput(inputs, config);
 	}
 
+	// 使用用户消息调用代理的方法，返回节点输出
 	public Optional<NodeOutput> invokeAndGetOutput(UserMessage message) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doInvokeAndGetOutput方法执行调用
 		return doInvokeAndGetOutput(inputs, null);
 	}
 
+	// 使用用户消息和配置调用代理的方法，返回节点输出
 	public Optional<NodeOutput> invokeAndGetOutput(UserMessage message, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doInvokeAndGetOutput方法执行调用
 		return doInvokeAndGetOutput(inputs, config);
 	}
 
+	// 使用消息列表调用代理的方法，返回节点输出
 	public Optional<NodeOutput> invokeAndGetOutput(List<Message> messages) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(messages);
+		// 调用doInvokeAndGetOutput方法执行调用
 		return doInvokeAndGetOutput(inputs, null);
 	}
 
+	// 使用消息列表和配置调用代理的方法，返回节点输出
 	public Optional<NodeOutput> invokeAndGetOutput(List<Message> messages, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(messages);
+		// 调用doInvokeAndGetOutput方法执行调用
 		return doInvokeAndGetOutput(inputs, config);
 	}
 
 	// ------------------- Stream methods -------------------
 
+	// 使用字符串消息流式调用代理的方法，返回节点输出流
 	public Flux<NodeOutput> stream(String message) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doStream方法执行流式调用
 		return doStream(inputs, buildStreamConfig(null));
 	}
 
+	// 使用字符串消息和配置流式调用代理的方法，返回节点输出流
 	public Flux<NodeOutput> stream(String message, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doStream方法执行流式调用
 		return doStream(inputs, config);
 	}
 
+	// 使用用户消息流式调用代理的方法，返回节点输出流
 	public Flux<NodeOutput> stream(UserMessage message) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doStream方法执行流式调用
 		return doStream(inputs, buildStreamConfig(null));
 	}
 
+	// 使用用户消息和配置流式调用代理的方法，返回节点输出流
 	public Flux<NodeOutput> stream(UserMessage message, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(message);
+		// 调用doStream方法执行流式调用
 		return doStream(inputs, config);
 	}
 
+	// 使用消息列表流式调用代理的方法，返回节点输出流
 	public Flux<NodeOutput> stream(List<Message> messages) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(messages);
+		// 调用doStream方法执行流式调用
 		return doStream(inputs, buildStreamConfig(null));
 	}
 
+	// 使用消息列表和配置流式调用代理的方法，返回节点输出流
 	public Flux<NodeOutput> stream(List<Message> messages, RunnableConfig config) throws GraphRunnerException {
+		// 构建消息输入
 		Map<String, Object> inputs = buildMessageInput(messages);
+		// 调用doStream方法执行流式调用
 		return doStream(inputs, config);
 	}
 
+	// 执行调用的核心方法，返回整体状态
 	protected Optional<OverAllState> doInvoke(Map<String, Object> input, RunnableConfig runnableConfig) {
+		// 获取并编译图结构
 		CompiledGraph compiledGraph = getAndCompileGraph();
+		// 调用编译图的invoke方法执行调用
 		return compiledGraph.invoke(input, buildNonStreamConfig(runnableConfig));
 	}
 
+	// 执行调用的核心方法，返回节点输出
 	protected Optional<NodeOutput> doInvokeAndGetOutput(Map<String, Object> input, RunnableConfig runnableConfig) {
+		// 获取并编译图结构
 		CompiledGraph compiledGraph = getAndCompileGraph();
+		// 调用编译图的invokeAndGetOutput方法执行调用
 		return compiledGraph.invokeAndGetOutput(input, buildNonStreamConfig(runnableConfig));
 	}
 
+	// 执行流式调用的核心方法，返回节点输出流
 	protected Flux<NodeOutput> doStream(Map<String, Object> input, RunnableConfig runnableConfig) {
+		// 获取并编译图结构
 		CompiledGraph compiledGraph = getAndCompileGraph();
+		// 调用编译图的stream方法执行流式调用
 		return compiledGraph.stream(input, buildStreamConfig(runnableConfig));
 	}
 
+	// 构建非流式调用配置的方法
 	protected RunnableConfig buildNonStreamConfig(RunnableConfig config) {
+		// 如果配置为空，则创建新的配置并添加元数据
 		if (config == null) {
 			return RunnableConfig.builder().addMetadata("_stream_", false).addMetadata("_AGENT_", name).build();
 		}
+		// 如果配置不为空，则基于现有配置构建新配置并添加元数据
 		return RunnableConfig.builder(config).addMetadata("_stream_", false).addMetadata("_AGENT_", name).build();
 	}
 
+	// 构建流式调用配置的方法
 	protected RunnableConfig buildStreamConfig(RunnableConfig config) {
+		// 如果配置为空，则创建新的配置并添加元数据
 		if (config == null) {
 			return RunnableConfig.builder().addMetadata("_AGENT_", name).build();
 		}
+		// 如果配置不为空，则基于现有配置构建新配置并添加元数据
 		return RunnableConfig.builder(config).addMetadata("_AGENT_", name).build();
 	}
 
+	// 构建消息输入的方法
 	protected Map<String, Object> buildMessageInput(Object message) {
+		// 声明消息列表变量
 		List<Message> messages;
+		// 检查消息是否为列表类型
 		if (message instanceof List) {
+			// 如果是列表类型，直接转换为消息列表
 			messages = (List<Message>) message;
 		} else {
+			// 如果不是列表类型，使用工具方法转换为消息列表
 			messages = convertToMessages(message);
 		}
 
+		// 创建输入映射
 		Map<String, Object> inputs = new HashMap<>();
+		// 将消息列表添加到输入映射中
 		inputs.put("messages", messages);
 
+		// 声明最后一个用户消息变量
 		UserMessage lastUserMessage = null;
+		// 从消息列表末尾开始遍历，查找最后一个用户消息
 		for (int i = messages.size() - 1; i >= 0; i--) {
+			// 获取当前消息
 			Message msg = messages.get(i);
+			// 检查是否为用户消息
 			if (msg instanceof UserMessage) {
+				// 如果是用户消息，则保存并跳出循环
 				lastUserMessage = (UserMessage) msg;
 				break;
 			}
 		}
+		// 如果找到最后一个用户消息，则将其文本内容添加到输入映射中
 		if (lastUserMessage != null) {
 			inputs.put("input", lastUserMessage.getText());
 		}
+		// 返回构建的输入映射
 		return inputs;
 	}
 
+	// 抽象方法，由子类实现图结构的初始化
 	protected abstract StateGraph initGraph() throws GraphStateException;
-
 }

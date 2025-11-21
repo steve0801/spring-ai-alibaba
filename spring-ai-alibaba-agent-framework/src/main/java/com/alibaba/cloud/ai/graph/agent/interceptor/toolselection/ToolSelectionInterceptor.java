@@ -65,106 +65,127 @@ public class ToolSelectionInterceptor extends ModelInterceptor {
 	private final ObjectMapper objectMapper;
 
 	private ToolSelectionInterceptor(Builder builder) {
+		// 初始化选择模型
 		this.selectionModel = builder.selectionModel;
+		// 设置系统提示语，默认为DEFAULT_SYSTEM_PROMPT
 		this.systemPrompt = builder.systemPrompt;
+		// 最大工具数限制，可为空
 		this.maxTools = builder.maxTools;
+		// 始终包含的工具集合，如果builder中未设置则初始化为空HashSet
 		this.alwaysInclude = builder.alwaysInclude != null
 				? new HashSet<>(builder.alwaysInclude)
 				: new HashSet<>();
+		// 创建ObjectMapper实例用于解析JSON响应
 		this.objectMapper = new ObjectMapper();
 	}
 
 	public static Builder builder() {
+		// 返回一个新的Builder实例
 		return new Builder();
 	}
 
 	@Override
 	public ModelResponse interceptModel(ModelRequest request, ModelCallHandler handler) {
+		// 获取请求中的可用工具列表
 		List<String> availableTools = request.getTools();
 
-		// If no tools or already within limit, skip selection
+		// 如果没有工具或者工具数量已经在限制范围内，则跳过筛选直接调用处理器
 		if (availableTools == null || availableTools.isEmpty() ||
 				(maxTools != null && availableTools.size() <= maxTools)) {
 			return handler.call(request);
 		}
 
-		// Find the last user message
+		// 查找最后一条用户消息
 		String lastUserQuery = findLastUserMessage(request.getMessages());
 		if (lastUserQuery == null) {
+			// 没有找到用户消息时记录日志并跳过工具选择
 			log.debug("No user message found, skipping tool selection");
 			return handler.call(request);
 		}
 
-		// Perform tool selection
+		// 执行工具选择逻辑
 		Set<String> selectedToolNames = selectTools(availableTools, lastUserQuery);
 
+		// 记录选择结果的日志信息
 		log.info("Selected {} tools from {} available: {}",
 				selectedToolNames.size(), availableTools.size(), selectedToolNames);
 
-		// Filter tools based on selection
+		// 根据选择结果过滤工具列表
 		List<String> filteredTools = availableTools.stream()
 				.filter(selectedToolNames::contains)
 				.collect(Collectors.toList());
 
-		// Create new request with filtered tools
+		// 构建新的请求对象，其中只包含筛选后的工具
 		ModelRequest filteredRequest = ModelRequest.builder(request)
 				.tools(filteredTools)
 				.build();
 
+		// 调用下一个拦截器或最终处理程序
 		return handler.call(filteredRequest);
 	}
 
 	private String findLastUserMessage(List<Message> messages) {
+		// 从后往前遍历消息列表寻找最后一个UserMessage
 		for (int i = messages.size() - 1; i >= 0; i--) {
 			Message msg = messages.get(i);
 			if (msg instanceof UserMessage) {
+				// 找到UserMessage时返回其文本内容
 				return msg.getText();
 			}
 		}
+		// 没有找到UserMessage时返回null
 		return null;
 	}
 
 	private Set<String> selectTools(List<String> toolNames, String userQuery) {
 		try {
-			// Build tool list for prompt
+			// 构建工具列表字符串供提示词使用
 			StringBuilder toolList = new StringBuilder();
 			for (String toolName : toolNames) {
 				toolList.append("- ").append(toolName).append("\n");
 			}
 
+			// 如果设置了最大工具数限制，则添加相应指令到提示词中
 			String maxToolsInstruction = maxTools != null
 					? "\nIMPORTANT: List the tool names in order of relevance. " +
 					"Select at most " + maxTools + " tools."
 					: "";
 
-			// Create selection prompt
+			// 创建用于工具选择的提示消息列表
 			List<Message> selectionMessages = List.of(
+					// 添加系统消息，包括基础提示和最大工具数限制说明
 					new SystemMessage(systemPrompt + maxToolsInstruction),
+					// 添加用户消息，包含可用工具列表、用户查询及响应格式要求
 					new UserMessage("Available tools:\n" + toolList +
 							"\nUser query: " + userQuery +
 							"\n\nRespond with a JSON object containing a 'tools' array with the selected tool names: {\"tools\": [\"tool1\", \"tool2\"]}")
 			);
 
+			// 将消息封装成Prompt对象
 			Prompt prompt = new Prompt(selectionMessages);
+			// 使用选择模型进行推理调用
 			var response = selectionModel.call(prompt);
+			// 提取模型响应的文本内容
 			String responseText = response.getResult().getOutput().getText();
 
-			// Parse JSON response
+			// 解析模型返回的JSON响应获取选中的工具名称
 			Set<String> selected = parseToolSelection(responseText);
 
-			// Add always-include tools
+			// 添加始终应包含的工具
 			selected.addAll(alwaysInclude);
 
-			// Limit to maxTools if specified
+			// 如果设定了最大工具数且当前选中数量超过此限制，则截断至限定数量
 			if (maxTools != null && selected.size() > maxTools) {
 				List<String> selectedList = new ArrayList<>(selected);
 				selected = new HashSet<>(selectedList.subList(0, maxTools));
 			}
 
+			// 返回选中的工具集合
 			return selected;
 
 		}
 		catch (Exception e) {
+			// 工具选择过程中出现异常时记录警告日志，并使用全部工具继续执行
 			log.warn("Tool selection failed, using all tools: {}", e.getMessage());
 			return new HashSet<>(toolNames);
 		}
@@ -172,12 +193,13 @@ public class ToolSelectionInterceptor extends ModelInterceptor {
 
 	private Set<String> parseToolSelection(String responseText) {
 		try {
-			// Try to parse as JSON
+			// 尝试将响应文本解析为ToolSelectionResponse对象
 			ToolSelectionResponse response = objectMapper.readValue(responseText, ToolSelectionResponse.class);
+			// 返回解析出的工具名称列表转换成的Set
 			return new HashSet<>(response.tools);
 		}
 		catch (Exception e) {
-			// Fallback: extract tool names from text
+			// JSON解析失败时记录调试日志并返回空集合作为回退方案
 			log.debug("Failed to parse JSON, using fallback extraction");
 			return new HashSet<>();
 		}
@@ -185,53 +207,70 @@ public class ToolSelectionInterceptor extends ModelInterceptor {
 
 	@Override
 	public String getName() {
+		// 返回拦截器名称"ToolSelection"
 		return "ToolSelection";
 	}
 
+	// 定义用于接收工具选择响应的内部类
 	private static class ToolSelectionResponse {
+		// 使用JsonProperty注解标记tools字段对应JSON中的"tools"键
 		@JsonProperty("tools")
 		public List<String> tools;
 	}
 
+	// 构造器模式中的Builder类定义
 	public static class Builder {
+		// 选择模型实例
 		private ChatModel selectionModel;
+		// 系统提示语，默认值为DEFAULT_SYSTEM_PROMPT
 		private String systemPrompt = DEFAULT_SYSTEM_PROMPT;
+		// 最大工具数限制
 		private Integer maxTools;
+		// 始终应包含的工具集合
 		private Set<String> alwaysInclude;
 
 		public Builder selectionModel(ChatModel selectionModel) {
+			// 设置选择模型
 			this.selectionModel = selectionModel;
 			return this;
 		}
 
 		public Builder systemPrompt(String systemPrompt) {
+			// 设置系统提示语
 			this.systemPrompt = systemPrompt;
 			return this;
 		}
 
 		public Builder maxTools(int maxTools) {
+			// 验证maxTools参数必须大于0
 			if (maxTools <= 0) {
 				throw new IllegalArgumentException("maxTools must be > 0");
 			}
+			// 设置最大工具数限制
 			this.maxTools = maxTools;
 			return this;
 		}
 
 		public Builder alwaysInclude(Set<String> alwaysInclude) {
+			// 设置始终包含的工具集合
 			this.alwaysInclude = alwaysInclude;
 			return this;
 		}
 
 		public Builder alwaysInclude(String... toolNames) {
+			// 通过变长参数设置始终包含的工具集合
 			this.alwaysInclude = new HashSet<>(Arrays.asList(toolNames));
 			return this;
 		}
 
 		public ToolSelectionInterceptor build() {
+			// 验证必要属性selectionModel是否已设置
 			if (selectionModel == null) {
 				throw new IllegalStateException("selectionModel is required");
 			}
+			// 构造ToolSelectionInterceptor实例
 			return new ToolSelectionInterceptor(this);
 		}
 	}
 }
+

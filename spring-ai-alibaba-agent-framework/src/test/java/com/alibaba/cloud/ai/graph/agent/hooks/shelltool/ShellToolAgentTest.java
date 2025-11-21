@@ -46,37 +46,47 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnabledIfEnvironmentVariable(named = "AI_DASHSCOPE_API_KEY", matches = ".+")
 public class ShellToolAgentTest {
 
+	// 声明ChatModel实例，用于与大语言模型交互
 	private ChatModel chatModel;
 
 	@BeforeEach
+	// 在每个测试方法执行前运行的初始化方法
 	void setUp() {
-		// Create DashScopeApi instance using the API key from environment variable
+		// 使用环境变量中的API密钥创建DashScopeApi实例
 		DashScopeApi dashScopeApi = DashScopeApi.builder().apiKey(System.getenv("AI_DASHSCOPE_API_KEY")).build();
 
-		// Create DashScope ChatModel instance
+		// 创建DashScope ChatModel实例
 		this.chatModel = DashScopeChatModel.builder().dashScopeApi(dashScopeApi).build();
 	}
 
 	@Test
+	// 测试ShellTool与ShellToolAgentHook的集成功能
 	public void testShellToolWithShellToolAgentHook() throws Exception {
+		// 创建临时工作目录用于测试
 		Path tempWorkspace = Files.createTempDirectory("shelltool_test");
 
 		try {
 
+			// 创建ShellTool构建器，设置工作空间和超时参数
 			ShellTool.Builder shellToolBuilder = ShellTool.builder(tempWorkspace.toString())
 				.withCommandTimeout(30000)  // 30秒超时
 				.withMaxOutputLines(500);
 
+			// 根据操作系统类型设置shell命令
 			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
 				shellToolBuilder = shellToolBuilder.withShellCommand(List.of("powershell.exe"));
 			}
 
+			// 构建ShellTool的ToolCallback实例
 			ToolCallback shellToolCallback = shellToolBuilder.build();
 
+			// 创建工具列表
 			List<ToolCallback> tools = List.of(shellToolCallback);
 
+			// 创建ShellToolAgentHook实例
 			ShellToolAgentHook shellToolAgentHook = ShellToolAgentHook.builder().build();
 
+			// 创建ReactAgent实例，配置shell工具和钩子
 			ReactAgent agent = ReactAgent.builder()
 				.name("shell-tool-agent-example")
 				.model(chatModel)
@@ -89,10 +99,13 @@ public class ShellToolAgentTest {
 				.saver(new MemorySaver())
 				.build();
 
+			// 获取并打印Agent图表示例
 			GraphRepresentation representation = agent.getAndCompileGraph().stateGraph.getGraph(GraphRepresentation.Type.PLANTUML);
 			System.out.println("Agent Graph Representation:\n" + representation.content());
 
+			// 创建消息列表
 			List<Message> messages = new ArrayList<>();
+			// 根据操作系统类型设置测试命令
 			String testCommand = System.getProperty("os.name").toLowerCase().contains("windows") ?
 				"请帮我创建一个名为 test.txt 的文件，内容为 'Hello from ShellTool!'，然后列出当前目录的文件，最后显示 test.txt 文件的内容。请使用Windows PowerShell兼容的命令。" :
 				"请帮我完成以下任务：\n" +
@@ -101,16 +114,20 @@ public class ShellToolAgentTest {
 				"3. 显示 test.txt 文件的内容\n" +
 				"请按步骤执行，每步执行完告诉我结果。";
 
+			// 添加用户消息到消息列表
 			messages.add(new UserMessage(testCommand));
 
 			// 执行 Agent
 			System.out.println("开始执行 Agent...");
+			// 调用Agent执行shell命令
 			Optional<OverAllState> result = agent.invoke(messages);
 
+			// 验证执行结果
 			assertTrue(result.isPresent(), "Agent 应该返回结果");
 			Object messagesObj = result.get().value("messages").get();
 			assertNotNull(messagesObj, "返回的消息不应该为 null");
 
+			// 打印执行结果信息
 			System.out.println("Agent 执行成功，返回消息数量: " +
 				(messagesObj instanceof List ? ((List<?>) messagesObj).size() : "未知"));
 			System.out.println("Agent 结果: " + messagesObj);
@@ -122,15 +139,21 @@ public class ShellToolAgentTest {
 		}
 	}
 
+	// 获取编译配置的私有静态方法
 	private static CompileConfig getCompileConfig() {
+		// 创建保存器配置
 		SaverConfig saverConfig = SaverConfig.builder()
 			.register(new MemorySaver())
 			.build();
+		// 返回编译配置
 		return CompileConfig.builder().saverConfig(saverConfig).build();
 	}
 
+	// 删除目录的私有方法
 	private void deleteDirectory(Path directory) throws IOException {
+		// 检查目录是否存在
 		if (Files.exists(directory)) {
+			// 遍历目录并删除所有文件和子目录
 			Files.walk(directory)
 				.sorted(java.util.Comparator.reverseOrder())
 				.map(Path::toFile)

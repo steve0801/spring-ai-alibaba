@@ -37,19 +37,32 @@ public class MessageToolCallResultConverter implements ToolCallResultConverter {
 	 * More types like image/audio/video/file can be supported in the future.
 	 */
 	public String convert(@Nullable Object result, @Nullable Type returnType) {
+		// 如果返回类型为Void.TYPE，表示工具没有返回值
 		if (returnType == Void.TYPE) {
+			// 记录调试日志，说明工具没有返回类型，正在转换为常规响应
 			logger.debug("The tool has no return type. Converting to conventional response.");
+			// 将"Done"字符串转换为JSON格式并返回
 			return JsonParser.toJson("Done");
+		// 如果结果是AssistantMessage类型
 		} else if (result instanceof AssistantMessage assistantMessage) {
+			// 检查AssistantMessage的文本内容是否非空
 			if (StringUtils.hasLength(assistantMessage.getText())) {
+				// 返回AssistantMessage的文本内容
 				return assistantMessage.getText();
+			// 检查AssistantMessage是否包含媒体内容
 			} else if (CollectionUtils.isNotEmpty(assistantMessage.getMedia())) {
+				// 抛出不支持操作异常，说明当前Spring AI ToolResponseMessage仅支持文本类型
 				throw new UnsupportedOperationException("Currently Spring AI ToolResponseMessage only supports text type, that's why the return type of this method is String. More types like image/audio/video/file can be supported in the future.");
 			}
+			// 记录警告日志，说明工具返回了空的AssistantMessage，正在转换为常规响应
 			logger.warn("The tool returned an empty AssistantMessage. Converting to conventional response.");
+			// 将"Done"字符串转换为JSON格式并返回
 			return JsonParser.toJson("Done");
+		// 其他情况
 		} else {
+			// 记录调试日志，说明正在将工具结果转换为JSON格式
 			logger.debug("Converting tool result to JSON.");
+			// 将结果对象转换为JSON格式并返回
 			return JsonParser.toJson(result);
 		}
 	}

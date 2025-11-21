@@ -16,7 +16,10 @@
 package com.alibaba.cloud.ai.graph.agent.tools;
 
 public interface ToolContextConstants {
+	// 定义Agent状态在上下文中的键名，用于存储和获取Agent的当前状态
 	String AGENT_STATE_CONTEXT_KEY = "_AGENT_STATE_";
+	// 定义Agent状态更新在上下文中的键名，用于存储和获取需要更新的Agent状态
 	String AGENT_STATE_FOR_UPDATE_CONTEXT_KEY = "_AGENT_STATE_FOR_UPDATE_";
+	// 定义Agent配置在上下文中的键名，用于存储和获取Agent的配置信息
 	String AGENT_CONFIG_CONTEXT_KEY = "_AGENT_CONFIG_";
 }

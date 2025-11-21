@@ -66,13 +66,21 @@ public class ToolCallLimitTest {
         assertTrue(result2.isPresent(), "第二次调用应该返回结果而不是抛出异常");
     }
 
+    // 创建带有工具调用限制钩子的ReactAgent实例
     public ReactAgent createAgent(ToolCallLimitHook hook, String name, ChatModel model) throws GraphStateException {
+        // 使用ReactAgent构建器模式创建实例
         return ReactAgent.builder()
+                // 设置agent名称
                 .name(name)
+                // 设置聊天模型
                 .model(model)
+                // 添加工具调用限制钩子
                 .hooks(List.of(hook))
+                // 添加天气工具回调
                 .tools(WeatherTool.createWeatherTool("weather_tool", new WeatherTool()))
+                // 设置内存保存器用于状态保存
                 .saver(new MemorySaver())
+                // 构建并返回ReactAgent实例
                 .build();
     }
 

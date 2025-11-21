@@ -26,36 +26,53 @@ import reactor.core.publisher.Flux;
  */
 public class ModelResponse {
 
+	// 存储聊天响应的ChatResponse对象
 	private ChatResponse chatResponse;
 
+	// 存储消息内容的对象，可以是AssistantMessage或Flux<ChatResponse>
 	private final Object message;
 
+	// 构造函数，接受一个消息对象进行初始化
 	public ModelResponse(Object message) {
+		// 初始化message字段
 		this.message = message;
 	}
 
+	// 构造函数，接受消息对象和ChatResponse对象进行初始化
 	public ModelResponse(Object message, ChatResponse chatResponse) {
+		// 初始化message字段
 		this.message = message;
+		// 初始化chatResponse字段
 		this.chatResponse = chatResponse;
 	}
 
+	// 静态工厂方法，根据AssistantMessage创建ModelResponse实例
 	public static ModelResponse of(AssistantMessage message) {
+		// 创建并返回新的ModelResponse实例
 		return new ModelResponse(message);
 	}
 
+	// 静态工厂方法，根据AssistantMessage和ChatResponse创建ModelResponse实例
 	public static ModelResponse of(AssistantMessage message, ChatResponse chatResponse) {
+		// 创建并返回新的ModelResponse实例
 		return new ModelResponse(message, chatResponse);
 	}
 
+	// 静态工厂方法，根据Flux<ChatResponse>创建ModelResponse实例
 	public static ModelResponse of(Flux<ChatResponse> flux) {
+		// 创建并返回新的ModelResponse实例
 		return new ModelResponse(flux);
 	}
 
+	// 获取message字段的getter方法
 	public Object getMessage() {
+		// 返回message对象
 		return message;
 	}
 
+	// 获取chatResponse字段的getter方法
 	public ChatResponse getChatResponse() {
+		// 返回chatResponse对象
 		return chatResponse;
 	}
 }

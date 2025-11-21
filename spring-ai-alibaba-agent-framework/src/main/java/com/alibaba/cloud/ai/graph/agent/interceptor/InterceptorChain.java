@@ -39,23 +39,27 @@ public class InterceptorChain {
 			List<ModelInterceptor> interceptors,
 			ModelCallHandler baseHandler) {
 
+		// 如果拦截器列表为空或长度为0，直接返回基础处理器
 		if (interceptors == null || interceptors.isEmpty()) {
 			return baseHandler;
 		}
 
-		// Start with the base handler
+		// 初始化当前处理器为基础处理器
 		ModelCallHandler current = baseHandler;
 
-		// Wrap from last to first (right-to-left composition)
-		// This ensures first interceptor is outermost
+		// 从最后一个拦截器开始向前包装（右到左组合）
+		// 这样确保第一个拦截器是最外层的
 		for (int i = interceptors.size() - 1; i >= 0; i--) {
+			// 获取当前位置的拦截器
 			ModelInterceptor interceptor = interceptors.get(i);
+			// 保存下一个处理器引用
 			ModelCallHandler nextHandler = current;
 
-			// Create a wrapper that calls the interceptor's wrap method
+			// 创建一个包装器，调用拦截器的 interceptModel 方法
 			current = request -> interceptor.interceptModel(request, nextHandler);
 		}
 
+		// 返回组合后的处理器
 		return current;
 	}
 
@@ -73,23 +77,27 @@ public class InterceptorChain {
 			List<ToolInterceptor> interceptors,
 			ToolCallHandler baseHandler) {
 
+		// 如果拦截器列表为空或长度为0，直接返回基础处理器
 		if (interceptors == null || interceptors.isEmpty()) {
 			return baseHandler;
 		}
 
-		// Start with the base handler
+		// 初始化当前处理器为基础处理器
 		ToolCallHandler current = baseHandler;
 
-		// Wrap from last to first (right-to-left composition)
-		// This ensures first interceptor is outermost
+		// 从最后一个拦截器开始向前包装（右到左组合）
+		// 这样确保第一个拦截器是最外层的
 		for (int i = interceptors.size() - 1; i >= 0; i--) {
+			// 获取当前位置的拦截器
 			ToolInterceptor interceptor = interceptors.get(i);
+			// 保存下一个处理器引用
 			ToolCallHandler nextHandler = current;
 
-			// Create a wrapper that calls the interceptor's wrap method
+			// 创建一个包装器，调用拦截器的 interceptToolCall 方法
 			current = request -> interceptor.interceptToolCall(request, nextHandler);
 		}
 
+		// 返回组合后的处理器
 		return current;
 	}
 
@@ -110,3 +118,4 @@ public class InterceptorChain {
 	 * baseHandler -> cache -> retry -> auth -> response
 	 */
 }
+

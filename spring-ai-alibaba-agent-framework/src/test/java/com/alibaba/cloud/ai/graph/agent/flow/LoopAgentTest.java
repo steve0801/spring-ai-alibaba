@@ -41,20 +41,25 @@ public class LoopAgentTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoopAgentTest.class);
 
+	// 声明ChatModel实例，用于与大语言模型交互
 	private ChatModel chatModel;
 
+	// 声明SequentialAgent实例，用于处理博客文章的生成和评审
 	private SequentialAgent blogAgent;
 
+    // 声明SequentialAgent实例，用于处理SQL生成和评分
     private SequentialAgent sqlAgent;
 
 	@BeforeEach
+	// 在每个测试方法执行前运行的初始化方法
 	void setUp() throws GraphStateException {
-		// Create DashScopeApi instance using the API key from environment variable
+		// 使用环境变量中的API密钥创建DashScopeApi实例
 		DashScopeApi dashScopeApi = DashScopeApi.builder().apiKey(System.getenv("AI_DASHSCOPE_API_KEY")).build();
 
-		// Create DashScope ChatModel instance
+		// 创建DashScope ChatModel实例
 		this.chatModel = DashScopeChatModel.builder().dashScopeApi(dashScopeApi).build();
 
+        // 创建writerAgent，用于文章写作
         ReactAgent writerAgent = ReactAgent.builder()
                 .name("writer_agent")
                 .model(chatModel)
@@ -63,6 +68,7 @@ public class LoopAgentTest {
                 .outputKey("article")
                 .build();
 
+        // 创建reviewerAgent，用于文章评审和修改
         ReactAgent reviewerAgent = ReactAgent.builder()
                 .name("reviewer_agent")
                 .model(chatModel)
@@ -71,12 +77,14 @@ public class LoopAgentTest {
                 .outputKey("reviewed_article")
                 .build();
 
+        // 创建blogAgent，按顺序执行writerAgent和reviewerAgent
         this.blogAgent = SequentialAgent.builder()
                 .name("blog_agent")
                 .description("可以根据用户给定的主题写一篇文章，然后将文章交给评论员进行评论。")
                 .subAgents(List.of(writerAgent, reviewerAgent))
                 .build();
 
+        // 创建sqlGenerateAgent，用于根据自然语言生成SQL代码
         ReactAgent sqlGenerateAgent = ReactAgent.builder()
                 .name("sqlGenerateAgent")
                 .model(chatModel)
@@ -91,6 +99,7 @@ public class LoopAgentTest {
                 .outputKey("sql")
                 .build();
 
+        // 创建sqlRatingAgent，用于对SQL语句进行评分
         ReactAgent sqlRatingAgent = ReactAgent.builder()
                 .name("sqlRatingAgent")
                 .model(chatModel)
@@ -100,6 +109,7 @@ public class LoopAgentTest {
                 .outputKey("score")
                 .build();
 
+        // 创建sqlAgent，按顺序执行sqlGenerateAgent和sqlRatingAgent
         this.sqlAgent = SequentialAgent.builder()
                 .name("sql_agent")
                 .description("可以根据用户的输入，生成SQL语句，并对其评分。")
@@ -108,15 +118,19 @@ public class LoopAgentTest {
 	}
 
     @Test
+    // 测试基于计数的循环模式
     void testCountMode() throws Exception {
+        // 创建LoopAgent，使用计数循环策略，执行2次
         LoopAgent loopAgent = LoopAgent.builder()
                 .name("loop_agent")
                 .description("循环执行一个任务，直到满足条件。")
                 .subAgent(this.blogAgent)
                 .loopStrategy(LoopMode.count(2))
                 .build();
+        // 执行循环代理，生成Python Socket编程的demo并优化代码
         OverAllState state = loopAgent.invoke("帮我写一个Python Socket编程的demo，并优化代码").orElseThrow();
         logger.info("Result: {}", state.data());
+        // 验证结果中包含消息列表
         Optional<Object> optional = state.value("messages");
         assert optional.isPresent();
         Object object = optional.get();
@@ -126,27 +140,36 @@ public class LoopAgentTest {
     }
 
     @Test
+    // 测试基于条件的循环模式
     void testConditionMode() throws Exception {
+        // 创建LoopAgent，使用条件循环策略
         LoopAgent loopAgent = LoopAgent.builder()
                 .name("loop_agent")
                 .description("循环执行一个任务，直到满足条件。")
                 .subAgent(this.sqlAgent)
                 .loopStrategy(LoopMode.condition(messages -> {
                     logger.info("Messages: {}", messages);
+                    // 如果消息列表为空，返回false
                     if(messages.isEmpty()) {
                         return false;
                     }
+                    // 获取最后一条消息的文本内容
                     String text = messages.get(messages.size() - 1).getText();
                     try {
+                        // 尝试解析文本为浮点数评分
                         double score = Double.parseDouble(text);
+                        // 如果评分大于0.5，返回true结束循环
                         return score > 0.5;
                     } catch (Exception e) {
+                        // 解析失败返回false继续循环
                         return false;
                     }
                 }))
                 .build();
+        // 执行循环代理，生成查找名字以s开头的用户SQL
         OverAllState state = loopAgent.invoke("现在有一个用户表，名为user，有列（id, name, password），现在我想要找所有名字以s开头的用户，如何写对应SQL？").orElseThrow();
         logger.info("Result: {}", state.data());
+        // 验证结果中包含消息列表
         Optional<Object> optional = state.value("messages");
         assert optional.isPresent();
         Object object = optional.get();
@@ -156,24 +179,34 @@ public class LoopAgentTest {
     }
 
     @Test
+    // 测试基于数组的循环模式
     void testArrayMode() throws Exception {
+        // 创建LoopAgent，使用数组循环策略
         LoopAgent loopAgent = LoopAgent.builder()
                 .name("loop_agent")
                 .description("循环执行任务。")
                 .subAgent(this.sqlAgent)
                 .loopStrategy(LoopMode.array())
                 .build();
+        // 执行循环代理，处理多个SQL查询请求
         OverAllState state = loopAgent.invoke("""
                 ["现在有一个用户表，名为user，有列（id, name, password），现在我想要找所有名字以s开头的用户，如何写对应SQL？",
                 "现在有一个用户表，名为user，有列（id, name, password），现在我想要找所有名字以t开头的用户，如何写对应SQL？",
                 "现在有一个用户表，名为user，现在我想要找所有用户，如何写对应SQL？"]
                 """).orElseThrow();
         logger.info("Result: {}", state.data());
+        // 验证结果中包含消息列表
+        // 从状态中获取"messages"键对应的值
         Optional<Object> optional = state.value("messages");
+        // 断言optional存在值（不为空）
         assert optional.isPresent();
+        // 获取optional中的对象
         Object object = optional.get();
+        // 断言对象是List类型
         assert object instanceof List;
+        // 将对象转换为List类型
         List<?> messages = (List<?>) object;
+        // 断言消息列表不为空
         assert !messages.isEmpty();
     }
 

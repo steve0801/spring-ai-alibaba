@@ -46,80 +46,106 @@ public class HumanInTheLoopTest {
 	private ChatModel chatModel;
 
 	@BeforeEach
+	// 在每个测试方法执行前运行的初始化方法
 	void setUp() {
-		// Create DashScopeApi instance using the API key from environment variable
+		// 使用环境变量中的API密钥创建DashScopeApi实例
 		DashScopeApi dashScopeApi = DashScopeApi.builder().apiKey(System.getenv("AI_DASHSCOPE_API_KEY")).build();
 
-		// Create DashScope ChatModel instance
+		// 创建DashScope ChatModel实例
 		this.chatModel = DashScopeChatModel.builder().dashScopeApi(dashScopeApi).build();
 	}
 
 	@Test
+	// 测试拒绝人类反馈的场景
 	public void testRejected() throws Exception {
+		// 创建ReactAgent实例
 		ReactAgent agent = createAgent();
 
+		// 打印图表示例
 		printGraphRepresentation(agent);
 
+		// 设置线程ID
 		String threadId = "test-thread-123";
+		// 创建RunnableConfig配置
 		RunnableConfig runnableConfig = RunnableConfig.builder().threadId(threadId).build();
 
-		// Assert RunnableConfig is properly configured
+		// 验证RunnableConfig配置正确
 		Assertions.assertNotNull(runnableConfig, "RunnableConfig should not be null");
 		Assertions.assertTrue(runnableConfig.threadId().isPresent(), "Thread ID should be present");
 		Assertions.assertEquals(threadId, runnableConfig.threadId().get(), "Thread ID should match");
 
+		// 执行第一次调用，应该触发中断等待人类审批
 		InterruptionMetadata interruptionMetadata = performFirstInvocation(agent, runnableConfig);
 
+		// 构建拒绝反馈的元数据
 		InterruptionMetadata feedbackMetadata = buildRejectionFeedback(interruptionMetadata);
 
+		// 执行第二次调用，使用拒绝反馈恢复执行
 		performSecondInvocation(agent, threadId, feedbackMetadata);
 
 	}
 
 	@Test
+	// 测试批准人类反馈的场景
 	public void testApproved() throws Exception {
+		// 创建ReactAgent实例
 		ReactAgent agent = createAgent();
 
+		// 打印图表示例
 		printGraphRepresentation(agent);
 
+		// 设置线程ID
 		String threadId = "test-thread-approved";
+		// 创建RunnableConfig配置
 		RunnableConfig runnableConfig = RunnableConfig.builder().threadId(threadId).build();
 
-		// Assert RunnableConfig is properly configured
+		// 验证RunnableConfig配置正确
 		Assertions.assertNotNull(runnableConfig, "RunnableConfig should not be null");
 		Assertions.assertTrue(runnableConfig.threadId().isPresent(), "Thread ID should be present");
 		Assertions.assertEquals(threadId, runnableConfig.threadId().get(), "Thread ID should match");
 
+		// 执行第一次调用，应该触发中断等待人类审批
 		InterruptionMetadata interruptionMetadata = performFirstInvocation(agent, runnableConfig);
 
+		// 构建批准反馈的元数据
 		InterruptionMetadata feedbackMetadata = buildApprovalFeedback(interruptionMetadata);
 
+		// 执行第二次调用，使用批准反馈恢复执行
 		performSecondInvocation(agent, threadId, feedbackMetadata);
 
 	}
 
 	@Test
+	// 测试编辑人类反馈的场景
 	public void testEdited() throws Exception {
+		// 创建ReactAgent实例
 		ReactAgent agent = createAgent();
 
+		// 打印图表示例
 		printGraphRepresentation(agent);
 
+		// 设置线程ID
 		String threadId = "test-thread-edited";
+		// 创建RunnableConfig配置
 		RunnableConfig runnableConfig = RunnableConfig.builder().threadId(threadId).build();
 
-		// Assert RunnableConfig is properly configured
+		// 验证RunnableConfig配置正确
 		Assertions.assertNotNull(runnableConfig, "RunnableConfig should not be null");
 		Assertions.assertTrue(runnableConfig.threadId().isPresent(), "Thread ID should be present");
 		Assertions.assertEquals(threadId, runnableConfig.threadId().get(), "Thread ID should match");
 
+		// 执行第一次调用，应该触发中断等待人类审批
 		InterruptionMetadata interruptionMetadata = performFirstInvocation(agent, runnableConfig);
 
+		// 构建编辑反馈的元数据
 		InterruptionMetadata feedbackMetadata = buildEditedFeedback(interruptionMetadata);
 
+		// 执行第二次调用，使用编辑反馈恢复执行
 		performSecondInvocation(agent, threadId, feedbackMetadata);
 
 	}
 
+	// 创建ReactAgent的私有方法
 	private ReactAgent createAgent() throws GraphStateException {
 		return ReactAgent.builder()
 				.name("single_agent")
@@ -131,41 +157,44 @@ public class HumanInTheLoopTest {
 				.build();
 	}
 
+	// 打印图表示例的私有方法
 	private void printGraphRepresentation(ReactAgent agent) {
 		GraphRepresentation representation = agent.getGraph().getGraph(GraphRepresentation.Type.PLANTUML);
 		System.out.println(representation.content());
 	}
 
+	// 执行第一次调用的私有方法
 	private InterruptionMetadata performFirstInvocation(ReactAgent agent, RunnableConfig runnableConfig) throws Exception {
-		// First invocation - should trigger interruption for human approval
+		// 第一次调用 - 应该触发人类审批的中断
 		System.out.println("\n=== First Invocation: Expecting Interruption ===");
 		Optional<NodeOutput> result = agent.invokeAndGetOutput("帮我写一篇100字左右散文。", runnableConfig);
 
-		// Assert first invocation results in interruption
+		// 验证第一次调用导致中断
 		Assertions.assertTrue(result.isPresent(), "First invocation should return a result");
 		Assertions.assertInstanceOf(InterruptionMetadata.class, result.get(),
 			"First invocation should return InterruptionMetadata for human approval");
 
+		// 获取中断元数据
 		InterruptionMetadata interruptionMetadata = (InterruptionMetadata) result.get();
 
-		// Assert interruption metadata contains expected information
+		// 验证中断元数据包含预期信息
 		Assertions.assertNotNull(interruptionMetadata.node(), "Interruption should have node id");
 		Assertions.assertNotNull(interruptionMetadata.state(), "Interruption should have state");
 
-		// Assert state contains expected data
+		// 验证状态包含预期数据
 		Assertions.assertNotNull(interruptionMetadata.state().data(),
 			"Interruption state should have data");
 		Assertions.assertFalse(interruptionMetadata.state().data().isEmpty(),
 			"Interruption state data should not be empty");
 
-		// Assert tool feedbacks are present
+		// 验证工具反馈存在
 		List<InterruptionMetadata.ToolFeedback> toolFeedbacks = interruptionMetadata.toolFeedbacks();
 		Assertions.assertNotNull(toolFeedbacks, "Tool feedbacks should not be null");
 		Assertions.assertFalse(toolFeedbacks.isEmpty(), "Tool feedbacks should not be empty");
 		Assertions.assertEquals(1, toolFeedbacks.size(),
 			"Should have exactly one tool feedback for the 'poem' tool");
 
-		// Assert tool feedback details
+		// 验证工具反馈详情
 		InterruptionMetadata.ToolFeedback firstFeedback = toolFeedbacks.get(0);
 		Assertions.assertNotNull(firstFeedback.getId(), "Tool feedback should have an id");
 		Assertions.assertFalse(firstFeedback.getId().isEmpty(), "Tool feedback id should not be empty");
@@ -173,15 +202,18 @@ public class HumanInTheLoopTest {
 		Assertions.assertNotNull(firstFeedback.getArguments(), "Tool feedback should have arguments");
 		Assertions.assertNotNull(firstFeedback.getDescription(), "Tool feedback should have description");
 
+		// 返回中断元数据
 		return interruptionMetadata;
 	}
 
+	// 构建拒绝反馈的私有方法
 	private InterruptionMetadata buildRejectionFeedback(InterruptionMetadata interruptionMetadata) {
-		// Build new metadata with REJECTED feedback
+		// 使用拒绝反馈构建新的元数据
 		InterruptionMetadata.Builder newBuilder = InterruptionMetadata.builder()
 			.nodeId(interruptionMetadata.node())
 			.state(interruptionMetadata.state());
 
+		// 为每个工具反馈设置拒绝结果
 		interruptionMetadata.toolFeedbacks().forEach(toolFeedback -> {
 			InterruptionMetadata.ToolFeedback rejectedFeedback = InterruptionMetadata.ToolFeedback
 				.builder(toolFeedback)
@@ -191,15 +223,18 @@ public class HumanInTheLoopTest {
 			newBuilder.addToolFeedback(rejectedFeedback);
 		});
 
+		// 构建并返回新的中断元数据
 		return newBuilder.build();
 	}
 
+	// 构建批准反馈的私有方法
 	private InterruptionMetadata buildApprovalFeedback(InterruptionMetadata interruptionMetadata) {
-		// Build new metadata with APPROVED feedback
+		// 使用批准反馈构建新的元数据
 		InterruptionMetadata.Builder newBuilder = InterruptionMetadata.builder()
 			.nodeId(interruptionMetadata.node())
 			.state(interruptionMetadata.state());
 
+		// 为每个工具反馈设置批准结果
 		interruptionMetadata.toolFeedbacks().forEach(toolFeedback -> {
 			InterruptionMetadata.ToolFeedback approvedFeedback = InterruptionMetadata.ToolFeedback
 				.builder(toolFeedback)
@@ -208,15 +243,18 @@ public class HumanInTheLoopTest {
 			newBuilder.addToolFeedback(approvedFeedback);
 		});
 
+		// 构建并返回新的中断元数据
 		return newBuilder.build();
 	}
 
+	// 构建编辑反馈的私有方法
 	private InterruptionMetadata buildEditedFeedback(InterruptionMetadata interruptionMetadata) {
-		// Build new metadata with EDITED feedback
+		// 使用编辑反馈构建新的元数据
 		InterruptionMetadata.Builder newBuilder = InterruptionMetadata.builder()
 			.nodeId(interruptionMetadata.node())
 			.state(interruptionMetadata.state());
 
+		// 为每个工具反馈设置编辑结果和修改后的参数
 		interruptionMetadata.toolFeedbacks().forEach(toolFeedback -> {
 			InterruptionMetadata.ToolFeedback editedFeedback = InterruptionMetadata.ToolFeedback
 				.builder(toolFeedback)
@@ -226,26 +264,29 @@ public class HumanInTheLoopTest {
 			newBuilder.addToolFeedback(editedFeedback);
 		});
 
+		// 构建并返回新的中断元数据
 		return newBuilder.build();
 	}
 
+	// 执行第二次调用的私有方法
 	private void performSecondInvocation(ReactAgent agent, String threadId, InterruptionMetadata feedbackMetadata) throws Exception {
-		// Resume execution with human feedback
+		// 使用人类反馈恢复执行
 		System.out.println("\n=== Second Invocation: Resuming with REJECTED Feedback ===");
+		// 创建恢复执行的配置，添加人类反馈元数据
 		RunnableConfig resumeRunnableConfig = RunnableConfig.builder().threadId(threadId)
 				.addMetadata(RunnableConfig.HUMAN_FEEDBACK_METADATA_KEY, feedbackMetadata)
 				.build();
 
 		try {
-			// Second invocation - should resume and complete
+			// 第二次调用 - 应该恢复并完成执行
 			Optional<NodeOutput> result = agent.invokeAndGetOutput("", resumeRunnableConfig);
 
-			// Assert second invocation completes successfully
+			// 验证第二次调用成功完成
 			Assertions.assertTrue(result.isPresent(), "Second invocation should return a result");
 			NodeOutput finalOutput = result.get();
 			Assertions.assertNotNull(finalOutput, "Final result should not be null");
 
-			// Assert the result is NOT another interruption (execution should complete)
+			// 验证结果不是另一个中断（执行应该完成）
 			Assertions.assertNotEquals(InterruptionMetadata.class, finalOutput.getClass(),
 				"Final result should not be an InterruptionMetadata - execution should complete");
 
@@ -253,13 +294,14 @@ public class HumanInTheLoopTest {
 			System.out.println("Final result node: " + finalOutput.node());
 			System.out.println("Final result state data keys: " + finalOutput.state().data().keySet());
 
-			// Assert final state contains expected data
+			// 验证最终状态包含预期数据
 			Assertions.assertNotNull(finalOutput.state(), "Final output should have state");
 			Assertions.assertNotNull(finalOutput.state().data(), "Final output state should have data");
 			Assertions.assertFalse(finalOutput.state().data().isEmpty(),
 				"Final output state data should not be empty");
 
 		} catch (java.util.concurrent.CompletionException e) {
+			// 处理ReactAgent执行失败的情况
 			System.err.println("ReactAgent execution failed: " + e.getMessage());
 			e.printStackTrace();
 			fail("ReactAgent execution failed: " + e.getMessage());

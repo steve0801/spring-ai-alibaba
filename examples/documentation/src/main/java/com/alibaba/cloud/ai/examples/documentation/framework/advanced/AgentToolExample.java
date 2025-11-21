@@ -52,26 +52,29 @@ public class AgentToolExample {
 	 * 注意：需要配置ChatModel实例才能运行
 	 */
 	public static void main(String[] args) {
-		// 创建 DashScope API 实例
+		// 创建 DashScope API 实例，用于与DashScope服务通信
+		// 从环境变量中获取API密钥
 		DashScopeApi dashScopeApi = DashScopeApi.builder()
 				.apiKey(System.getenv("AI_DASHSCOPE_API_KEY"))
 				.build();
 
-		// 创建 ChatModel
+		// 创建 ChatModel 实例，使用DashScope API进行聊天模型操作
 		ChatModel chatModel = DashScopeChatModel.builder()
 				.dashScopeApi(dashScopeApi)
 				.build();
 
+		// 检查chatModel是否正确初始化
 		if (chatModel == null) {
+			// 如果chatModel为空，则输出错误信息并退出程序
 			System.err.println("错误：请先配置ChatModel实例");
 			System.err.println("请设置 AI_DASHSCOPE_API_KEY 环境变量");
 			return;
 		}
 
-		// 创建示例实例
+		// 创建示例实例，传入chatModel
 		AgentToolExample example = new AgentToolExample(chatModel);
 
-		// 运行所有示例
+		// 调用runAllExamples方法运行所有示例
 		example.runAllExamples();
 	}
 
@@ -112,7 +115,7 @@ public class AgentToolExample {
 	 * 通过定义输入Schema，使子Agent能够接收结构化的输入信息
 	 */
 	public void example2_agentToolWithInputSchema() throws GraphRunnerException {
-		// 定义子Agent的输入Schema
+		// 定义子Agent的输入Schema，指定需要的主题、字数和风格三个字段
 		String writerInputSchema = """
 				{
 				    "topic": "文章主题",
@@ -121,6 +124,7 @@ public class AgentToolExample {
 				}
 				""";
 
+		// 创建写作Agent，使用定义的输入Schema
 		ReactAgent writerAgent = ReactAgent.builder()
 				.name("structured_writer_agent")
 				.model(chatModel)
@@ -129,6 +133,7 @@ public class AgentToolExample {
 				.inputSchema(writerInputSchema)
 				.build();
 
+		// 创建协调者Agent，负责调用写作工具
 		ReactAgent coordinatorAgent = ReactAgent.builder()
 				.name("coordinator_agent")
 				.model(chatModel)
@@ -136,8 +141,10 @@ public class AgentToolExample {
 				.tools(AgentTool.getFunctionToolCallback(writerAgent))
 				.build();
 
+		// 调用协调者Agent，请求写一篇关于春天的散文
 		Optional<OverAllState> result = coordinatorAgent.invoke("请写一篇关于春天的散文，大约150字");
 
+		// 检查执行结果是否成功
 		if (result.isPresent()) {
 			System.out.println("结构化输入示例执行成功");
 		}
@@ -149,9 +156,10 @@ public class AgentToolExample {
 	 * 使用 Java 类型定义输入，框架会自动生成 JSON Schema
 	 */
 	public void example3_agentToolWithInputType() throws GraphRunnerException {
-		// 定义输入类型
+		// 定义输入类型，使用Java record定义文章请求的结构
 		record ArticleRequest(String topic, int wordCount, String style) { }
 
+		// 创建写作Agent，使用类型化输入
 		ReactAgent writerAgent = ReactAgent.builder()
 				.name("typed_writer_agent")
 				.model(chatModel)
@@ -160,6 +168,7 @@ public class AgentToolExample {
 				.inputType(ArticleRequest.class)
 				.build();
 
+		// 创建协调者Agent，负责调用写作工具
 		ReactAgent coordinatorAgent = ReactAgent.builder()
 				.name("coordinator_with_type_agent")
 				.model(chatModel)
@@ -167,8 +176,10 @@ public class AgentToolExample {
 				.tools(AgentTool.getFunctionToolCallback(writerAgent))
 				.build();
 
+		// 调用协调者Agent，请求写一篇关于秋天的现代诗
 		Optional<OverAllState> result = coordinatorAgent.invoke("请写一篇关于秋天的现代诗，大约100字");
 
+		// 检查执行结果是否成功
 		if (result.isPresent()) {
 			System.out.println("类型化输入示例执行成功");
 		}
@@ -180,7 +191,7 @@ public class AgentToolExample {
 	 * 定义输出Schema，使子Agent返回结构化的输出格式
 	 */
 	public void example4_agentToolWithOutputSchema() throws GraphRunnerException {
-		// 定义输出Schema
+		// 定义写作Agent的输出Schema，要求返回包含标题、内容和字符数的JSON格式
 		String writerOutputSchema = """
 				请按照以下JSON格式返回：
 				{
@@ -190,6 +201,7 @@ public class AgentToolExample {
 				}
 				""";
 
+		// 创建写作Agent，使用定义的输出Schema
 		ReactAgent writerAgent = ReactAgent.builder()
 				.name("writer_with_output_schema")
 				.model(chatModel)
@@ -198,6 +210,7 @@ public class AgentToolExample {
 				.outputSchema(writerOutputSchema)
 				.build();
 
+		// 创建协调者Agent，负责调用写作工具
 		ReactAgent coordinatorAgent = ReactAgent.builder()
 				.name("coordinator_output_schema")
 				.model(chatModel)
@@ -205,8 +218,10 @@ public class AgentToolExample {
 				.tools(AgentTool.getFunctionToolCallback(writerAgent))
 				.build();
 
+		// 调用协调者Agent，请求写一篇关于冬天的短文
 		Optional<OverAllState> result = coordinatorAgent.invoke("写一篇关于冬天的短文");
 
+		// 检查执行结果是否成功
 		if (result.isPresent()) {
 			System.out.println("结构化输出示例执行成功");
 		}
@@ -218,7 +233,7 @@ public class AgentToolExample {
 	 * 使用 Java 类型定义输出，框架会自动生成输出 schema
 	 */
 	public void example5_agentToolWithOutputType() throws GraphRunnerException {
-		// 定义输出类型
+		// 定义输出类型，使用Java类定义文章输出的结构
 		class ArticleOutput {
 			private String title;
 			private String content;
@@ -235,11 +250,10 @@ public class AgentToolExample {
 
 			public int getCharacterCount() {
 				return characterCount;
-			}
-
-			public void setTitle(String title) {
+			}			public void setTitle(String title) {
 				this.title = title;
 			}
+
 
 
 			public void setContent(String content) {
@@ -252,6 +266,7 @@ public class AgentToolExample {
 			}
 		}
 
+		// 创建写作Agent，使用类型化输出
 		ReactAgent writerAgent = ReactAgent.builder()
 				.name("writer_with_output_type")
 				.model(chatModel)
@@ -260,6 +275,7 @@ public class AgentToolExample {
 				.outputType(ArticleOutput.class)
 				.build();
 
+		// 创建协调者Agent，负责调用写作工具
 		ReactAgent coordinatorAgent = ReactAgent.builder()
 				.name("coordinator_output_type")
 				.model(chatModel)
@@ -267,8 +283,10 @@ public class AgentToolExample {
 				.tools(AgentTool.getFunctionToolCallback(writerAgent))
 				.build();
 
+		// 调用协调者Agent，请求写一篇关于夏天的小诗
 		Optional<OverAllState> result = coordinatorAgent.invoke("写一篇关于夏天的小诗");
 
+		// 检查执行结果是否成功
 		if (result.isPresent()) {
 			System.out.println("类型化输出示例执行成功");
 		}
@@ -280,72 +298,85 @@ public class AgentToolExample {
 	 * 同时使用 inputType 和 outputType 进行完整的类型化Agent工具调用
 	 */
 	public void example6_fullTypedAgentTool() throws GraphRunnerException {
-		// 定义输入和输出类型
+		// 定义文章请求的输入类型，包含主题、字数和风格三个字段
 		record ArticleRequest(String topic, int wordCount, String style) { }
 
+		// 定义文章输出类型，包含标题、内容和字符数三个字段
 		class ArticleOutput {
 			private String title;
 			private String content;
 			private int characterCount;
 
+			// 获取标题
 			public String getTitle() {
 				return title;
 			}
 
+			// 获取内容
 			public String getContent() {
 				return content;
 			}
 
+			// 获取字符数
 			public int getCharacterCount() {
 				return characterCount;
-			}
-
+			}			// 设置标题
 			public void setTitle(String title) {
 				this.title = title;
 			}
 
 
+
+			// 设置内容
 			public void setContent(String content) {
 				this.content = content;
 			}
 
 
+			// 设置字符数
 			public void setCharacterCount(int characterCount) {
 				this.characterCount = characterCount;
 			}
 		}
 
+		// 定义评审输出类型，包含评论、是否批准和建议三个字段
 		class ReviewOutput {
 			private String comment;
 			private boolean approved;
 			private List<String> suggestions;
 
+			// 获取评论
 			public String getComment() {
 				return comment;
 			}
 
+			// 设置评论
 			public void setComment(String comment) {
 				this.comment = comment;
 			}
 
+			// 获取是否批准
 			public boolean isApproved() {
 				return approved;
 			}
 
+			// 设置是否批准
 			public void setApproved(boolean approved) {
 				this.approved = approved;
 			}
 
+			// 获取建议列表
 			public List<String> getSuggestions() {
 				return suggestions;
 			}
 
+			// 设置建议列表
 			public void setSuggestions(List<String> suggestions) {
 				this.suggestions = suggestions;
 			}
 		}
 
-		// 创建完整类型化的Agent
+		// 创建完整类型化的写作Agent，使用ArticleRequest作为输入类型，ArticleOutput作为输出类型
 		ReactAgent writerAgent = ReactAgent.builder()
 				.name("full_typed_writer")
 				.model(chatModel)
@@ -355,6 +386,7 @@ public class AgentToolExample {
 				.outputType(ArticleOutput.class)
 				.build();
 
+		// 创建完整类型化的评审Agent，使用ReviewOutput作为输出类型
 		ReactAgent reviewerAgent = ReactAgent.builder()
 				.name("typed_reviewer")
 				.model(chatModel)
@@ -363,6 +395,7 @@ public class AgentToolExample {
 				.outputType(ReviewOutput.class)
 				.build();
 
+		// 创建协调者Agent，集成写作和评审两个工具
 		ReactAgent orchestratorAgent = ReactAgent.builder()
 				.name("orchestrator")
 				.model(chatModel)
@@ -373,8 +406,10 @@ public class AgentToolExample {
 				)
 				.build();
 
+		// 调用协调者Agent，请求写一篇关于友谊的散文并进行评审
 		Optional<OverAllState> result = orchestratorAgent.invoke("请写一篇关于友谊的散文，约200字，需要评审");
 
+		// 检查执行结果是否成功
 		if (result.isPresent()) {
 			System.out.println("完整类型化示例执行成功");
 		}
@@ -386,7 +421,7 @@ public class AgentToolExample {
 	 * 主Agent可以访问多个不同的子Agent工具，根据需要调用
 	 */
 	public void example7_multipleAgentTools() throws GraphRunnerException {
-		// 创建写作Agent
+		// 创建写作Agent，用于处理文章创作任务
 		ReactAgent writerAgent = ReactAgent.builder()
 				.name("writer_agent")
 				.model(chatModel)
@@ -394,7 +429,7 @@ public class AgentToolExample {
 				.instruction("你是一个专业作家，擅长各类文章创作。")
 				.build();
 
-		// 创建翻译Agent
+		// 创建翻译Agent，用于处理文本翻译任务
 		ReactAgent translatorAgent = ReactAgent.builder()
 				.name("translator_agent")
 				.model(chatModel)
@@ -402,7 +437,7 @@ public class AgentToolExample {
 				.instruction("你是一个专业翻译，能够准确翻译多种语言。")
 				.build();
 
-		// 创建总结Agent
+		// 创建总结Agent，用于处理内容总结和提炼任务
 		ReactAgent summarizerAgent = ReactAgent.builder()
 				.name("summarizer_agent")
 				.model(chatModel)
@@ -410,7 +445,7 @@ public class AgentToolExample {
 				.instruction("你是一个内容总结专家，擅长提炼关键信息。")
 				.build();
 
-		// 创建主Agent，集成多个工具
+		// 创建主Agent，集成写作、翻译和总结三个工具，作为协调者统一处理复杂任务
 		ReactAgent multiToolAgent = ReactAgent.builder()
 				.name("multi_tool_coordinator")
 				.model(chatModel)
@@ -423,7 +458,7 @@ public class AgentToolExample {
 				)
 				.build();
 
-		// 测试不同的请求
+		// 测试复杂的多步骤请求：先写作，再翻译，最后总结
 		multiToolAgent.invoke("请写一篇关于AI的文章，然后翻译成英文，最后给出摘要");
 
 		System.out.println("多工具Agent示例执行成功");
@@ -433,38 +468,47 @@ public class AgentToolExample {
 	 * 运行所有示例
 	 */
 	public void runAllExamples() {
+		// 输出标题信息
 		System.out.println("=== 智能体作为工具（Agent Tool）示例 ===\n");
 
 		try {
+			// 输出示例1信息并执行
 			System.out.println("示例1: 基础 Agent Tool 调用");
 			example1_basicAgentTool();
 			System.out.println();
 
+			// 输出示例2信息并执行
 			System.out.println("示例2: 使用 inputSchema 控制输入");
 			example2_agentToolWithInputSchema();
 			System.out.println();
 
+			// 输出示例3信息并执行
 			System.out.println("示例3: 使用 inputType 定义类型化输入");
 			example3_agentToolWithInputType();
 			System.out.println();
 
+			// 输出示例4信息并执行
 			System.out.println("示例4: 使用 outputSchema 控制输出");
 			example4_agentToolWithOutputSchema();
 			System.out.println();
 
+			// 输出示例5信息并执行
 			System.out.println("示例5: 使用 outputType 定义类型化输出");
 			example5_agentToolWithOutputType();
 			System.out.println();
 
+			// 输出示例6信息并执行
 			System.out.println("示例6: 完整类型化示例");
 			example6_fullTypedAgentTool();
 			System.out.println();
 
+			// 输出示例7信息并执行
 			System.out.println("示例7: 多个子Agent作为工具");
 			example7_multipleAgentTools();
 			System.out.println();
 
 		}
+		// 捕获异常并在出现错误时输出错误信息
 		catch (Exception e) {
 			System.err.println("执行示例时出错: " + e.getMessage());
 			e.printStackTrace();
