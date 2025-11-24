@@ -34,18 +34,22 @@ public enum GraphEdgeObservationDocumentation implements ObservationDocumentatio
 	 * Represents a graph edge observation operation. Defines the default convention and
 	 * key names for edge observations.
 	 */
+	// 定义GRAPH_EDGE枚举常量，实现ObservationDocumentation接口
 	GRAPH_EDGE {
 
+		// 重写getDefaultConvention方法，返回默认的观察约定类
 		@Override
 		public Class<? extends ObservationConvention<? extends Observation.Context>> getDefaultConvention() {
 			return GraphEdgeObservationConvention.class;
 		}
 
+		// 重写getLowCardinalityKeyNames方法，返回低基数键名数组
 		@Override
 		public KeyName[] getLowCardinalityKeyNames() {
 			return LowCardinalityKeyNames.values();
 		}
 
+		// 重写getHighCardinalityKeyNames方法，返回高基数键名数组
 		@Override
 		public KeyName[] getHighCardinalityKeyNames() {
 			return HighCardinalityKeyNames.values();
@@ -56,12 +60,15 @@ public enum GraphEdgeObservationDocumentation implements ObservationDocumentatio
 	 * Low cardinality key names for graph edge observations. These keys have limited
 	 * unique values and are suitable for grouping and filtering.
 	 */
+	// 定义低基数键名枚举，实现KeyName接口
 	public enum LowCardinalityKeyNames implements KeyName {
 
 		/**
 		 * Represents the kind/type of the AI operation.
 		 */
+		// 定义SPRING_AI_ALIBABA_KIND枚举常量，表示AI操作的类型
 		SPRING_AI_ALIBABA_KIND {
+			// 重写asString方法，返回键名字符串
 			@Override
 			public String asString() {
 				return "spring.ai.alibaba.kind";
@@ -71,7 +78,9 @@ public enum GraphEdgeObservationDocumentation implements ObservationDocumentatio
 		/**
 		 * Represents the name of the graph edge being observed.
 		 */
+		// 定义GRAPH_NAME枚举常量，表示被观察的图边缘名称
 		GRAPH_NAME {
+			// 重写asString方法，返回键名字符串
 			@Override
 			public String asString() {
 				return "spring.ai.alibaba.graph.edge.name";
@@ -84,12 +93,15 @@ public enum GraphEdgeObservationDocumentation implements ObservationDocumentatio
 	 * High cardinality key names for graph edge observations. These keys have many unique
 	 * values and provide detailed observation data.
 	 */
+	// 定义高基数键名枚举，实现KeyName接口
 	public enum HighCardinalityKeyNames implements KeyName {
 
 		/**
 		 * Represents the current state of the graph edge execution.
 		 */
+		// 定义GRAPH_NODE_STATE枚举常量，表示图边缘执行的当前状态
 		GRAPH_NODE_STATE {
+			// 重写asString方法，返回键名字符串
 			@Override
 			public String asString() {
 				return "spring.ai.alibaba.graph.edge.state";
@@ -99,7 +111,9 @@ public enum GraphEdgeObservationDocumentation implements ObservationDocumentatio
 		/**
 		 * Represents the output data from the graph edge execution.
 		 */
+		// 定义GRAPH_NODE_OUTPUT枚举常量，表示图边缘执行的输出数据
 		GRAPH_NODE_OUTPUT {
+			// 重写asString方法，返回键名字符串
 			@Override
 			public String asString() {
 				return "spring.ai.alibaba.graph.edge.output";
@@ -107,5 +121,6 @@ public enum GraphEdgeObservationDocumentation implements ObservationDocumentatio
 		}
 
 	}
+
 
 }

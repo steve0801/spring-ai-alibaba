@@ -33,18 +33,26 @@ public record EdgeValue(String id, EdgeCondition value) {
 		this(null, value);
 	}
 
+	// 更新目标ID的方法，接收一个函数用于转换目标ID
 	EdgeValue withTargetIdsUpdated(Function<String, EdgeValue> target) {
+		// 如果当前EdgeValue有id，则直接应用target函数进行转换
 		if (id != null) {
 			return target.apply(id);
 		}
 
+		// 如果没有id，则处理value中的映射关系
+		// 创建新的映射关系，对每个现有的映射值应用target函数
 		var newMappings = value.mappings().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
+			// 对映射值应用target函数
 			var v = target.apply(e.getValue());
+			// 如果转换后的EdgeValue有id，则使用该id，否则保持原来的值
 			return (v.id() != null) ? v.id() : e.getValue();
 		}));
 
+		// 返回新的EdgeValue，id为null，value为新的EdgeCondition
 		return new EdgeValue(null, new EdgeCondition(value.action(), newMappings));
 
 	}
+
 
 }
