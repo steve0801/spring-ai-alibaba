@@ -76,7 +76,16 @@ public class RAGExample {
 		// TODO: 请配置您的VectorStore实例
 		// 例如：VectorStore vectorStore = new YourVectorStoreImplementation();
 		// 当前vectorStore未初始化，需要替换为实际的VectorStore实现
-		VectorStore vectorStore = null; // 请替换为实际的VectorStore实例
+		// VectorStore vectorStore = null; // 请替换为实际的VectorStore实例
+		//VectorStore vectorStore = new YourVectorStoreImplementation();; // 请替换为实际的VectorStore实例
+
+		// 创建 Milvus VectorStore 实例；使用Milvus进行向量存储
+		VectorStore vectorStore = new MilvusVectorStore(MilvusClientV2.create(
+				MilvusConfig.builder()
+						.host("localhost")  // Milvus 服务器地址
+						.port(19530)        // Milvus 服务器端口
+						.build()
+		));
 
 		// 检查chatModel和vectorStore是否正确初始化
 		if (chatModel == null || vectorStore == null) {
@@ -481,7 +490,7 @@ public class RAGExample {
 		try {
 			// 输出示例1信息
 			System.out.println("示例1: 构建知识库");
-			// example1_buildKnowledgeBase(); // 需要实际文件路径
+			 example1_buildKnowledgeBase(); // 需要实际文件路径
 			System.out.println();
 
 			// 输出示例2信息并执行

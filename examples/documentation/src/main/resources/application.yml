@@ -11,6 +11,13 @@ spring:
       chat:
         options:
           model: ${DASHSCOPE_MODEL:qwen-plus}
+    vectorstore:
+      milvus:
+        host: localhost
+        port: 19530
+        database-name: default
+        collection-name: spring_ai_demo
+        dimension: 1536
     # A2A Nacos 配置
     alibaba:
       a2a:
