@@ -1,0 +1,613 @@
+"C:\Users\steve xie\.jdks\jbr-17.0.8\bin\java.exe" -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:7017,suspend=y,server=n "-javaagent:C:\Users\STEVEX~1\AppData\Local\Temp\captureAgent7jars\debugger-agent.jar=file:///C:/Users/STEVEX~1/AppData/Local/Temp/capture13926636718219278767.props" "-agentpath:C:\Users\STEVEX~1\AppData\Local\Temp\idea_libasyncProfiler_dll_temp_folder8015\libasyncProfiler.dll=version,jfr,event=wall,interval=10ms,cstack=no,file=C:\Users\steve xie\IdeaSnapshots\AgentsExample_2025_11_24_191432.jfr,dbghelppath=C:\Users\STEVEX~1\AppData\Local\Temp\idea_dbghelp_dll_temp_folder10\dbghelp.dll,log=C:\Users\STEVEX~1\AppData\Local\Temp\AgentsExample_2025_11_24_191432.jfr.log.txt,logLevel=DEBUG" -Dcool.request.port=5178 -Dkotlinx.coroutines.debug.enable.creation.stack.trace=false -Ddebugger.agent.enable.coroutines=true -Dkotlinx.coroutines.debug.enable.flows.stack.trace=true -Dkotlinx.coroutines.debug.enable.mutable.state.flows.stack.trace=true -Ddebugger.async.stack.trace.for.all.threads=true -Dfile.encoding=UTF-8 -classpath "D:\Work\github\spring-ai-alibaba\examples\documentation\target\classes;C:\Users\steve xie\.m2\repository\com\alibaba\cloud\ai\spring-ai-alibaba-studio\1.1.0.0-M5\spring-ai-alibaba-studio-1.1.0.0-M5.jar;C:\Users\steve xie\.m2\repository\org\springframework\boot\spring-boot-starter\3.5.7\spring-boot-starter-3.5.7.jar;C:\Users\steve xie\.m2\repository\org\springframework\boot\spring-boot\3.5.7\spring-boot-3.5.7.jar;C:\Users\steve xie\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\3.5.7\spring-boot-autoconfigure-3.5.7.jar;C:\Users\steve xie\.m2\repository\org\springframework\boot\spring-boot-starter-logging\3.5.7\spring-boot-starter-logging-3.5.7.jar;C:\Users\steve xie\.m2\repository\ch\qos\logback\logback-classic\1.5.20\logback-classic-1.5.20.jar;C:\Users\steve xie\.m2\repository\ch\qos\logback\logback-core\1.5.20\logback-core-1.5.20.jar;C:\Users\steve xie\.m2\repository\org\apache\logging\log4j\log4j-to-slf4j\2.24.3\log4j-to-slf4j-2.24.3.jar;C:\Users\steve xie\.m2\repository\org\apache\logging\log4j\log4j-api\2.24.3\log4j-api-2.24.3.jar;C:\Users\steve xie\.m2\repository\org\slf4j\jul-to-slf4j\2.0.17\jul-to-slf4j-2.0.17.jar;C:\Users\steve xie\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.1\jakarta.annotation-api-2.1.1.jar;C:\Users\steve xie\.m2\repository\org\yaml\snakeyaml\2.4\snakeyaml-2.4.jar;C:\Users\steve xie\.m2\repository\com\github\ben-manes\caffeine\caffeine\3.2.2\caffeine-3.2.2.jar;C:\Users\steve xie\.m2\repository\org\jspecify\jspecify\1.0.0\jspecify-1.0.0.jar;C:\Users\steve xie\.m2\repository\com\google\errorprone\error_prone_annotations\2.40.0\error_prone_annotations-2.40.0.jar;C:\Users\steve xie\.m2\repository\com\alibaba\cloud\ai\spring-ai-alibaba-starter-dashscope\1.1.0.0-M5\spring-ai-alibaba-starter-dashscope-1.1.0.0-M5.jar;C:\Users\steve xie\.m2\repository\com\alibaba\cloud\ai\spring-ai-alibaba-autoconfigure-dashscope\1.1.0.0-M5\spring-ai-alibaba-autoconfigure-dashscope-1.1.0.0-M5.jar;C:\Users\steve xie\.m2\repository\com\alibaba\cloud\ai\spring-ai-alibaba-dashscope\1.1.0.0-M5\spring-ai-alibaba-dashscope-1.1.0.0-M5.jar;C:\Users\steve xie\.m2\repository\com\squareup\okhttp3\logging-interceptor\4.12.0\logging-interceptor-4.12.0.jar;C:\Users\steve xie\.m2\repository\org\apache\opennlp\opennlp-tools\2.3.3\opennlp-tools-2.3.3.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-retry\1.1.0-M4\spring-ai-autoconfigure-retry-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-model-tool\1.1.0-M4\spring-ai-autoconfigure-model-tool-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-model-chat-observation\1.1.0-M4\spring-ai-autoconfigure-model-chat-observation-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-model-embedding-observation\1.1.0-M4\spring-ai-autoconfigure-model-embedding-observation-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-model-image-observation\1.1.0-M4\spring-ai-autoconfigure-model-image-observation-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\com\alibaba\cloud\ai\spring-ai-alibaba-agent-framework\1.1.0.0-M5\spring-ai-alibaba-agent-framework-1.1.0.0-M5.jar;C:\Users\steve xie\.m2\repository\io\modelcontextprotocol\sdk\mcp\0.14.0\mcp-0.14.0.jar;C:\Users\steve xie\.m2\repository\io\modelcontextprotocol\sdk\mcp-json-jackson2\0.14.0\mcp-json-jackson2-0.14.0.jar;C:\Users\steve xie\.m2\repository\io\modelcontextprotocol\sdk\mcp-json\0.14.0\mcp-json-0.14.0.jar;C:\Users\steve xie\.m2\repository\com\networknt\json-schema-validator\1.5.7\json-schema-validator-1.5.7.jar;C:\Users\steve xie\.m2\repository\com\ethlo\time\itu\1.10.3\itu-1.10.3.jar;C:\Users\steve xie\.m2\repository\io\modelcontextprotocol\sdk\mcp-core\0.14.0\mcp-core-0.14.0.jar;C:\Users\steve xie\.m2\repository\com\alibaba\cloud\ai\spring-ai-alibaba-graph-core\1.1.0.0-M5\spring-ai-alibaba-graph-core-1.1.0.0-M5.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.19.2\jackson-datatype-jsr310-2.19.2.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.19.2\jackson-datatype-jdk8-2.19.2.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-commons\1.1.0-M4\spring-ai-commons-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\io\micrometer\context-propagation\1.1.3\context-propagation-1.1.3.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\jackson\module\jackson-module-jsonSchema\2.19.2\jackson-module-jsonSchema-2.19.2.jar;C:\Users\steve xie\.m2\repository\javax\validation\validation-api\1.1.0.Final\validation-api-1.1.0.Final.jar;C:\Users\steve xie\.m2\repository\com\knuddels\jtokkit\1.1.0\jtokkit-1.1.0.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-rag\1.1.0-M4\spring-ai-rag-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-retry\1.1.0-M4\spring-ai-retry-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\retry\spring-retry\2.0.12\spring-retry-2.0.12.jar;C:\Users\steve xie\.m2\repository\org\jetbrains\annotations\13.0\annotations-13.0.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-client-chat\1.1.0-M4\spring-ai-client-chat-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\io\swagger\core\v3\swagger-annotations-jakarta\2.2.30\swagger-annotations-jakarta-2.2.30.jar;C:\Users\steve xie\.m2\repository\com\github\victools\jsonschema-module-swagger-2\4.38.0\jsonschema-module-swagger-2-4.38.0.jar;C:\Users\steve xie\.m2\repository\org\apache\commons\commons-collections4\4.4\commons-collections4-4.4.jar;C:\Users\steve xie\.m2\repository\org\apache\commons\commons-exec\1.3\commons-exec-1.3.jar;C:\Users\steve xie\.m2\repository\commons-codec\commons-codec\1.18.0\commons-codec-1.18.0.jar;C:\Users\steve xie\.m2\repository\io\opentelemetry\opentelemetry-api\1.49.0\opentelemetry-api-1.49.0.jar;C:\Users\steve xie\.m2\repository\io\opentelemetry\opentelemetry-context\1.49.0\opentelemetry-context-1.49.0.jar;C:\Users\steve xie\.m2\repository\io\github\a2asdk\a2a-java-sdk-client\0.2.5.Beta2\a2a-java-sdk-client-0.2.5.Beta2.jar;C:\Users\steve xie\.m2\repository\io\github\a2asdk\a2a-java-sdk-common\0.2.5.Beta2\a2a-java-sdk-common-0.2.5.Beta2.jar;C:\Users\steve xie\.m2\repository\io\github\a2asdk\a2a-java-sdk-spec\0.2.5.Beta2\a2a-java-sdk-spec-0.2.5.Beta2.jar;C:\Users\steve xie\.m2\repository\org\apache\commons\commons-lang3\3.17.0\commons-lang3-3.17.0.jar;C:\Users\steve xie\.m2\repository\org\apache\httpcomponents\httpclient\4.5.14\httpclient-4.5.14.jar;C:\Users\steve xie\.m2\repository\org\apache\httpcomponents\httpcore\4.4.16\httpcore-4.4.16.jar;C:\Users\steve xie\.m2\repository\com\alibaba\fastjson\1.2.83\fastjson-1.2.83.jar;C:\Users\steve xie\.m2\repository\com\alibaba\cloud\ai\spring-ai-alibaba-starter-a2a-nacos\1.1.0.0-M5\spring-ai-alibaba-starter-a2a-nacos-1.1.0.0-M5.jar;C:\Users\steve xie\.m2\repository\io\github\a2asdk\a2a-java-reference-server\0.2.5.Beta2\a2a-java-reference-server-0.2.5.Beta2.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-reactive-routes\3.22.3\quarkus-reactive-routes-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-core\3.22.3\quarkus-core-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-os\2.12.0\smallrye-common-os-2.12.0.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-ide-launcher\3.22.3\quarkus-ide-launcher-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-development-mode-spi\3.22.3\quarkus-development-mode-spi-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\smallrye\config\smallrye-config\3.12.4\smallrye-config-3.12.4.jar;C:\Users\steve xie\.m2\repository\io\smallrye\config\smallrye-config-core\3.12.4\smallrye-config-core-3.12.4.jar;C:\Users\steve xie\.m2\repository\org\eclipse\microprofile\config\microprofile-config-api\3.1\microprofile-config-api-3.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-classloader\2.10.0\smallrye-common-classloader-2.10.0.jar;C:\Users\steve xie\.m2\repository\io\smallrye\config\smallrye-config-common\3.12.4\smallrye-config-common-3.12.4.jar;C:\Users\steve xie\.m2\repository\org\jboss\logging\jboss-logging\3.6.1.Final\jboss-logging-3.6.1.Final.jar;C:\Users\steve xie\.m2\repository\org\jboss\logmanager\jboss-logmanager\3.1.2.Final\jboss-logmanager-3.1.2.Final.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-constraint\2.2.0\smallrye-common-constraint-2.2.0.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-cpu\2.2.0\smallrye-common-cpu-2.2.0.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-expression\2.2.0\smallrye-common-expression-2.2.0.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-net\2.2.0\smallrye-common-net-2.2.0.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-ref\2.2.0\smallrye-common-ref-2.2.0.jar;C:\Users\steve xie\.m2\repository\jakarta\json\jakarta.json-api\2.1.3\jakarta.json-api-2.1.3.jar;C:\Users\steve xie\.m2\repository\org\eclipse\parsson\parsson\1.1.6\parsson-1.1.6.jar;C:\Users\steve xie\.m2\repository\org\jboss\threads\jboss-threads\3.8.0.Final\jboss-threads-3.8.0.Final.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-function\2.6.0\smallrye-common-function-2.6.0.jar;C:\Users\steve xie\.m2\repository\org\wildfly\common\wildfly-common\2.0.1\wildfly-common-2.0.1.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-bootstrap-runner\3.22.3\quarkus-bootstrap-runner-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-classloader-commons\3.22.3\quarkus-classloader-commons-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-io\2.12.0\smallrye-common-io-2.12.0.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-fs-util\1.0.0\quarkus-fs-util-1.0.0.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-vertx\3.22.3\quarkus-vertx-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-arc\3.22.3\quarkus-arc-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\arc\arc\3.22.3\arc-3.22.3.jar;C:\Users\steve xie\.m2\repository\jakarta\transaction\jakarta.transaction-api\2.0.1\jakarta.transaction-api-2.0.1.jar;C:\Users\steve xie\.m2\repository\org\eclipse\microprofile\context-propagation\microprofile-context-propagation-api\1.3\microprofile-context-propagation-api-1.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-netty\3.22.3\quarkus-netty-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-codec-http\4.1.128.Final\netty-codec-http-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-codec-http2\4.1.128.Final\netty-codec-http2-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-codec-haproxy\4.1.128.Final\netty-codec-haproxy-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-vertx-context\2.12.0\smallrye-common-vertx-context-2.12.0.jar;C:\Users\steve xie\.m2\repository\io\vertx\vertx-core\4.5.14\vertx-core-4.5.14.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-handler-proxy\4.1.128.Final\netty-handler-proxy-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-codec-socks\4.1.128.Final\netty-codec-socks-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-mutiny\3.22.3\quarkus-mutiny-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-smallrye-context-propagation\3.22.3\quarkus-smallrye-context-propagation-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\smallrye\smallrye-context-propagation\2.2.1\smallrye-context-propagation-2.2.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\smallrye-context-propagation-api\2.2.1\smallrye-context-propagation-api-2.2.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\smallrye-context-propagation-storage\2.2.1\smallrye-context-propagation-storage-2.2.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\mutiny-smallrye-context-propagation\2.8.0\mutiny-smallrye-context-propagation-2.8.0.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-virtual-threads\3.22.3\quarkus-virtual-threads-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-vertx-latebound-mdc-provider\3.22.3\quarkus-vertx-latebound-mdc-provider-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\smallrye-mutiny-vertx-core\3.18.1\smallrye-mutiny-vertx-core-3.18.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\smallrye-mutiny-vertx-runtime\3.18.1\smallrye-mutiny-vertx-runtime-3.18.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\vertx-mutiny-generator\3.18.1\vertx-mutiny-generator-3.18.1.jar;C:\Users\steve xie\.m2\repository\io\vertx\vertx-codegen\4.5.12\vertx-codegen-4.5.12.jar;C:\Users\steve xie\.m2\repository\io\smallrye\smallrye-fault-tolerance-vertx\6.9.1\smallrye-fault-tolerance-vertx-6.9.1.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-jackson\3.22.3\quarkus-jackson-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\smallrye\common\smallrye-common-annotation\2.12.0\smallrye-common-annotation-2.12.0.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-vertx-http\3.22.3\quarkus-vertx-http-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-security-runtime-spi\3.22.3\quarkus-security-runtime-spi-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-tls-registry\3.22.3\quarkus-tls-registry-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-tls-registry-spi\3.22.3\quarkus-tls-registry-spi-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\smallrye\certs\smallrye-private-key-pem-parser\0.9.2\smallrye-private-key-pem-parser-0.9.2.jar;C:\Users\steve xie\.m2\repository\io\quarkus\quarkus-credentials\3.22.3\quarkus-credentials-3.22.3.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\smallrye-mutiny-vertx-web\3.18.1\smallrye-mutiny-vertx-web-3.18.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\smallrye-mutiny-vertx-web-common\3.18.1\smallrye-mutiny-vertx-web-common-3.18.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\smallrye-mutiny-vertx-auth-common\3.18.1\smallrye-mutiny-vertx-auth-common-3.18.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\smallrye-mutiny-vertx-bridge-common\3.18.1\smallrye-mutiny-vertx-bridge-common-3.18.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\smallrye-mutiny-vertx-uri-template\3.18.1\smallrye-mutiny-vertx-uri-template-3.18.1.jar;C:\Users\steve xie\.m2\repository\io\vertx\vertx-uri-template\4.5.12\vertx-uri-template-4.5.12.jar;C:\Users\steve xie\.m2\repository\io\vertx\vertx-web\4.5.14\vertx-web-4.5.14.jar;C:\Users\steve xie\.m2\repository\io\vertx\vertx-web-common\4.5.14\vertx-web-common-4.5.14.jar;C:\Users\steve xie\.m2\repository\io\vertx\vertx-auth-common\4.5.14\vertx-auth-common-4.5.14.jar;C:\Users\steve xie\.m2\repository\io\vertx\vertx-bridge-common\4.5.14\vertx-bridge-common-4.5.14.jar;C:\Users\steve xie\.m2\repository\io\github\crac\org-crac\0.1.3\org-crac-0.1.3.jar;C:\Users\steve xie\.m2\repository\com\aayushatharva\brotli4j\brotli4j\1.16.0\brotli4j-1.16.0.jar;C:\Users\steve xie\.m2\repository\com\aayushatharva\brotli4j\service\1.16.0\service-1.16.0.jar;C:\Users\steve xie\.m2\repository\com\aayushatharva\brotli4j\native-windows-x86_64\1.16.0\native-windows-x86_64-1.16.0.jar;C:\Users\steve xie\.m2\repository\io\quarkus\security\quarkus-security\2.2.1\quarkus-security-2.2.1.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\mutiny\2.8.0\mutiny-2.8.0.jar;C:\Users\steve xie\.m2\repository\org\jctools\jctools-core\4.0.5\jctools-core-4.0.5.jar;C:\Users\steve xie\.m2\repository\jakarta\enterprise\jakarta.enterprise.cdi-api\4.1.0\jakarta.enterprise.cdi-api-4.1.0.jar;C:\Users\steve xie\.m2\repository\jakarta\enterprise\jakarta.enterprise.lang-model\4.1.0\jakarta.enterprise.lang-model-4.1.0.jar;C:\Users\steve xie\.m2\repository\jakarta\el\jakarta.el-api\6.0.0\jakarta.el-api-6.0.0.jar;C:\Users\steve xie\.m2\repository\jakarta\interceptor\jakarta.interceptor-api\2.2.0\jakarta.interceptor-api-2.2.0.jar;C:\Users\steve xie\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;C:\Users\steve xie\.m2\repository\io\github\a2asdk\a2a-java-sdk-server-common\0.2.5.Beta2\a2a-java-sdk-server-common-0.2.5.Beta2.jar;C:\Users\steve xie\.m2\repository\io\smallrye\reactive\mutiny-zero\1.1.1\mutiny-zero-1.1.1.jar;C:\Users\steve xie\.m2\repository\com\alibaba\nacos\nacos-client\3.1.0\nacos-client-3.1.0.jar;C:\Users\steve xie\.m2\repository\com\alibaba\nacos\nacos-client-basic\3.1.0\nacos-client-basic-3.1.0.jar;C:\Users\steve xie\.m2\repository\com\alibaba\nacos\nacos-auth-plugin\3.1.0\nacos-auth-plugin-3.1.0.jar;C:\Users\steve xie\.m2\repository\com\alibaba\nacos\nacos-encryption-plugin\3.1.0\nacos-encryption-plugin-3.1.0.jar;C:\Users\steve xie\.m2\repository\com\alibaba\nacos\nacos-logback-adapter-12\3.1.0\nacos-logback-adapter-12-3.1.0.jar;C:\Users\steve xie\.m2\repository\com\alibaba\nacos\logback-adapter\1.1.4\logback-adapter-1.1.4.jar;C:\Users\steve xie\.m2\repository\com\alibaba\nacos\nacos-log4j2-adapter\3.1.0\nacos-log4j2-adapter-3.1.0.jar;C:\Users\steve xie\.m2\repository\org\apache\httpcomponents\client5\httpclient5\5.5.1\httpclient5-5.5.1.jar;C:\Users\steve xie\.m2\repository\org\apache\httpcomponents\core5\httpcore5-h2\5.3.6\httpcore5-h2-5.3.6.jar;C:\Users\steve xie\.m2\repository\org\apache\httpcomponents\core5\httpcore5\5.3.6\httpcore5-5.3.6.jar;C:\Users\steve xie\.m2\repository\io\prometheus\simpleclient\0.16.0\simpleclient-0.16.0.jar;C:\Users\steve xie\.m2\repository\io\prometheus\simpleclient_tracer_otel\0.16.0\simpleclient_tracer_otel-0.16.0.jar;C:\Users\steve xie\.m2\repository\io\prometheus\simpleclient_tracer_common\0.16.0\simpleclient_tracer_common-0.16.0.jar;C:\Users\steve xie\.m2\repository\io\prometheus\simpleclient_tracer_otel_agent\0.16.0\simpleclient_tracer_otel_agent-0.16.0.jar;C:\Users\steve xie\.m2\repository\io\micrometer\micrometer-core\1.15.5\micrometer-core-1.15.5.jar;C:\Users\steve xie\.m2\repository\io\micrometer\micrometer-commons\1.15.5\micrometer-commons-1.15.5.jar;C:\Users\steve xie\.m2\repository\org\hdrhistogram\HdrHistogram\2.2.2\HdrHistogram-2.2.2.jar;C:\Users\steve xie\.m2\repository\org\latencyutils\LatencyUtils\2.0.3\LatencyUtils-2.0.3.jar;C:\Users\steve xie\.m2\repository\com\alibaba\nacos\nacos-maintainer-client\3.1.0\nacos-maintainer-client-3.1.0.jar;C:\Users\steve xie\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-starter-model-openai\1.1.0-M4\spring-ai-starter-model-openai-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-model-openai\1.1.0-M4\spring-ai-autoconfigure-model-openai-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-openai\1.1.0-M4\spring-ai-openai-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-model\1.1.0-M4\spring-ai-model-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-template-st\1.1.0-M4\spring-ai-template-st-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\antlr\ST4\4.3.4\ST4-4.3.4.jar;C:\Users\steve xie\.m2\repository\org\antlr\antlr-runtime\3.5.3\antlr-runtime-3.5.3.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-messaging\6.2.12\spring-messaging-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar;C:\Users\steve xie\.m2\repository\com\github\victools\jsonschema-generator\4.38.0\jsonschema-generator-4.38.0.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\classmate\1.7.1\classmate-1.7.1.jar;C:\Users\steve xie\.m2\repository\com\github\victools\jsonschema-module-jackson\4.38.0\jsonschema-module-jackson-4.38.0.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-context-support\6.2.12\spring-context-support-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-webflux\6.2.12\spring-webflux-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-model-chat-client\1.1.0-M4\spring-ai-autoconfigure-model-chat-client-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-model-chat-memory\1.1.0-M4\spring-ai-autoconfigure-model-chat-memory-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-starter-model-deepseek\1.1.0-M4\spring-ai-starter-model-deepseek-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-model-deepseek\1.1.0-M4\spring-ai-autoconfigure-model-deepseek-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-deepseek\1.1.0-M4\spring-ai-deepseek-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-starter-mcp-client\1.1.0-M4\spring-ai-starter-mcp-client-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-mcp-client-httpclient\1.1.0-M4\spring-ai-autoconfigure-mcp-client-httpclient-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-autoconfigure-mcp-client-common\1.1.0-M4\spring-ai-autoconfigure-mcp-client-common-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-mcp\1.1.0-M4\spring-ai-mcp-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-mcp-annotations\1.1.0-M4\spring-ai-mcp-annotations-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springaicommunity\mcp-annotations\0.6.0\mcp-annotations-0.6.0.jar;C:\Users\steve xie\.m2\repository\org\springframework\boot\spring-boot-starter-web\3.5.7\spring-boot-starter-web-3.5.7.jar;C:\Users\steve xie\.m2\repository\org\springframework\boot\spring-boot-starter-json\3.5.7\spring-boot-starter-json-3.5.7.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.19.2\jackson-module-parameter-names-2.19.2.jar;C:\Users\steve xie\.m2\repository\org\springframework\boot\spring-boot-starter-tomcat\3.5.7\spring-boot-starter-tomcat-3.5.7.jar;C:\Users\steve xie\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\10.1.48\tomcat-embed-core-10.1.48.jar;C:\Users\steve xie\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\10.1.48\tomcat-embed-el-10.1.48.jar;C:\Users\steve xie\.m2\repository\org\apache\tomcat\embed\tomcat-embed-websocket\10.1.48\tomcat-embed-websocket-10.1.48.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-web\6.2.12\spring-web-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-beans\6.2.12\spring-beans-6.2.12.jar;C:\Users\steve xie\.m2\repository\io\micrometer\micrometer-observation\1.15.5\micrometer-observation-1.15.5.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-webmvc\6.2.12\spring-webmvc-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-aop\6.2.12\spring-aop-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-context\6.2.12\spring-context-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-expression\6.2.12\spring-expression-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\ow2\asm\asm\9.7.1\asm-9.7.1.jar;C:\Users\steve xie\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-core\6.2.12\spring-core-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\springframework\spring-jcl\6.2.12\spring-jcl-6.2.12.jar;C:\Users\steve xie\.m2\repository\org\redisson\redisson\3.22.0\redisson-3.22.0.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-common\4.1.128.Final\netty-common-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-codec\4.1.128.Final\netty-codec-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-buffer\4.1.128.Final\netty-buffer-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-transport\4.1.128.Final\netty-transport-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-resolver\4.1.128.Final\netty-resolver-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-resolver-dns\4.1.128.Final\netty-resolver-dns-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-codec-dns\4.1.128.Final\netty-codec-dns-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-handler\4.1.128.Final\netty-handler-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\io\netty\netty-transport-native-unix-common\4.1.128.Final\netty-transport-native-unix-common-4.1.128.Final.jar;C:\Users\steve xie\.m2\repository\javax\cache\cache-api\1.1.1\cache-api-1.1.1.jar;C:\Users\steve xie\.m2\repository\io\projectreactor\reactor-core\3.7.12\reactor-core-3.7.12.jar;C:\Users\steve xie\.m2\repository\org\reactivestreams\reactive-streams\1.0.4\reactive-streams-1.0.4.jar;C:\Users\steve xie\.m2\repository\io\reactivex\rxjava3\rxjava\3.1.12\rxjava-3.1.12.jar;C:\Users\steve xie\.m2\repository\org\jboss\marshalling\jboss-marshalling\2.0.11.Final\jboss-marshalling-2.0.11.Final.jar;C:\Users\steve xie\.m2\repository\org\jboss\marshalling\jboss-marshalling-river\2.0.11.Final\jboss-marshalling-river-2.0.11.Final.jar;C:\Users\steve xie\.m2\repository\com\esotericsoftware\kryo\5.5.0\kryo-5.5.0.jar;C:\Users\steve xie\.m2\repository\com\esotericsoftware\reflectasm\1.11.9\reflectasm-1.11.9.jar;C:\Users\steve xie\.m2\repository\com\esotericsoftware\minlog\1.3.1\minlog-1.3.1.jar;C:\Users\steve xie\.m2\repository\org\slf4j\slf4j-api\2.0.17\slf4j-api-2.0.17.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.19.2\jackson-annotations-2.19.2.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.19.2\jackson-dataformat-yaml-2.19.2.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.19.2\jackson-core-2.19.2.jar;C:\Users\steve xie\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.19.2\jackson-databind-2.19.2.jar;C:\Users\steve xie\.m2\repository\net\bytebuddy\byte-buddy\1.17.8\byte-buddy-1.17.8.jar;C:\Users\steve xie\.m2\repository\org\jodd\jodd-bean\5.1.6\jodd-bean-5.1.6.jar;C:\Users\steve xie\.m2\repository\org\jodd\jodd-core\5.1.6\jodd-core-5.1.6.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-milvus-store\1.1.0-M4\spring-ai-milvus-store-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\org\springframework\ai\spring-ai-vector-store\1.1.0-M4\spring-ai-vector-store-1.1.0-M4.jar;C:\Users\steve xie\.m2\repository\io\milvus\milvus-sdk-java\2.5.8\milvus-sdk-java-2.5.8.jar;C:\Users\steve xie\.m2\repository\io\grpc\grpc-netty-shaded\1.59.1\grpc-netty-shaded-1.59.1.jar;C:\Users\steve xie\.m2\repository\com\google\guava\guava\32.0.1-android\guava-32.0.1-android.jar;C:\Users\steve xie\.m2\repository\com\google\guava\failureaccess\1.0.1\failureaccess-1.0.1.jar;C:\Users\steve xie\.m2\repository\com\google\guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;C:\Users\steve xie\.m2\repository\org\checkerframework\checker-qual\3.33.0\checker-qual-3.33.0.jar;C:\Users\steve xie\.m2\repository\com\google\j2objc\j2objc-annotations\2.8\j2objc-annotations-2.8.jar;C:\Users\steve xie\.m2\repository\io\perfmark\perfmark-api\0.26.0\perfmark-api-0.26.0.jar;C:\Users\steve xie\.m2\repository\io\grpc\grpc-core\1.59.1\grpc-core-1.59.1.jar;C:\Users\steve xie\.m2\repository\com\google\android\annotations\4.1.1.4\annotations-4.1.1.4.jar;C:\Users\steve xie\.m2\repository\org\codehaus\mojo\animal-sniffer-annotations\1.23\animal-sniffer-annotations-1.23.jar;C:\Users\steve xie\.m2\repository\io\grpc\grpc-context\1.59.1\grpc-context-1.59.1.jar;C:\Users\steve xie\.m2\repository\io\grpc\grpc-util\1.59.1\grpc-util-1.59.1.jar;C:\Users\steve xie\.m2\repository\io\grpc\grpc-protobuf\1.59.1\grpc-protobuf-1.59.1.jar;C:\Users\steve xie\.m2\repository\io\grpc\grpc-api\1.59.1\grpc-api-1.59.1.jar;C:\Users\steve xie\.m2\repository\com\google\code\findbugs\jsr305\3.0.2\jsr305-3.0.2.jar;C:\Users\steve xie\.m2\repository\com\google\api\grpc\proto-google-common-protos\2.22.0\proto-google-common-protos-2.22.0.jar;C:\Users\steve xie\.m2\repository\io\grpc\grpc-protobuf-lite\1.59.1\grpc-protobuf-lite-1.59.1.jar;C:\Users\steve xie\.m2\repository\io\grpc\grpc-stub\1.59.1\grpc-stub-1.59.1.jar;C:\Users\steve xie\.m2\repository\com\google\protobuf\protobuf-java\3.24.0\protobuf-java-3.24.0.jar;C:\Users\steve xie\.m2\repository\org\apache\commons\commons-text\1.10.0\commons-text-1.10.0.jar;C:\Users\steve xie\.m2\repository\com\squareup\okhttp3\okhttp\4.12.0\okhttp-4.12.0.jar;C:\Users\steve xie\.m2\repository\com\squareup\okio\okio\3.6.0\okio-3.6.0.jar;C:\Users\steve xie\.m2\repository\com\squareup\okio\okio-jvm\3.6.0\okio-jvm-3.6.0.jar;C:\Users\steve xie\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-common\1.9.25\kotlin-stdlib-common-1.9.25.jar;C:\Users\steve xie\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-jdk8\1.9.25\kotlin-stdlib-jdk8-1.9.25.jar;C:\Users\steve xie\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib\1.9.25\kotlin-stdlib-1.9.25.jar;C:\Users\steve xie\.m2\repository\org\jetbrains\kotlin\kotlin-stdlib-jdk7\1.9.25\kotlin-stdlib-jdk7-1.9.25.jar;C:\Users\steve xie\.m2\repository\com\google\code\gson\gson\2.13.2\gson-2.13.2.jar;C:\Users\steve xie\.m2\repository\org\apache\commons\commons-pool2\2.12.1\commons-pool2-2.12.1.jar;C:\Users\steve xie\.config\.cool-request\request\lib\spring-invoke-starter.jar;C:\Users\steve xie\AppData\Local\Programs\IntelliJ IDEA Ultimate\lib\idea_rt.jar" com.alibaba.cloud.ai.examples.documentation.framework.tutorials.AgentsExample
+已连接到地址为 ''127.0.0.1:7017'，传输: '套接字'' 的目标虚拟机
+=== Agents Tutorial Examples ===
+注意：需要设置 AI_DASHSCOPE_API_KEY 环境变量
+
+
+--- 示例1：基础模型配置 ---
+
+--- 示例2：高级模型配置 ---
+
+--- 示例3：工具使用 ---
+
+--- 示例5：基础 System Prompt ---
+
+--- 示例6：使用 instruction ---
+
+--- 示例7：动态 System Prompt ---
+
+--- 示例8：基础调用 ---
+我目前无法获取实时天气信息。建议您通过可靠的天气预报网站或应用（如中国气象局、中央气象台、天气通、墨迹天气等）查询杭州当前的天气情况。通常这些平台会提供温度、湿度、风力、空气质量以及未来几天的天气趋势等详细信息。
+
+如果您告诉我具体想了解的时间段（比如今天、明天或未来一周），我可以帮您分析一般情况下杭州那个时段的气候特点。
+
+--- 示例9：获取完整状态 ---
+完整状态：{"OverAllState":{"data":{"input":"帮我写一首诗","messages":[{"messageType":"USER","metadata":{"messageType":"USER"},"media":[],"text":"帮我写一首诗"},{"messageType":"ASSISTANT","metadata":{"search_info":"","role":"ASSISTANT","messageType":"ASSISTANT","finishReason":"STOP","id":"4fac813d-4144-4811-a0ff-9c3fc98478d9","reasoningContent":""},"toolCalls":[],"media":[],"text":"春风拂柳绿成行，  \n细雨轻沾花自香。  \n燕语呢喃穿旧巷，  \n蝶影翩跹过矮墙。  \n\n远山含黛云作裳，  \n流水潺潺入梦长。  \n不问人间纷扰事，  \n一壶清酒醉斜阳。"}]}}}
+
+--- 示例10：使用配置 ---
+
+--- 示例10.1：流式调用 - 基础用法 ---
+节点: __START__
+Agent: streaming_agent
+
+--- 示例10.2：流式调用 - 高级用法 ---
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=1, totalTokens=16}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=3, totalTokens=18}
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=5, totalTokens=20}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=6, totalTokens=21}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=11, totalTokens=26}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=15, totalTokens=30}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=20, totalTokens=35}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=24, totalTokens=39}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=29, totalTokens=44}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=34, totalTokens=49}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=38, totalTokens=53}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=42, totalTokens=57}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=48, totalTokens=63}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=53, totalTokens=68}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=58, totalTokens=73}
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=62, totalTokens=77}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=66, totalTokens=81}
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=70, totalTokens=85}
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=74, totalTokens=89}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=78, totalTokens=93}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=82, totalTokens=97}
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=86, totalTokens=101}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=90, totalTokens=105}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=95, totalTokens=110}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=100, totalTokens=115}
+处理中...
+当前节点: model
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=103, totalTokens=118}
+节点: model
+Agent: streaming_agent
+Token使用: DefaultUsage{promptTokens=15, completionTokens=103, totalTokens=118}
+节点: __END__
+Agent: streaming_agent
+流式输出完成
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+处理中...
+当前节点: model
+所有节点处理完成
+
+--- 示例10.3：流式调用 - 收集所有输出 ---
+总共收到 246 个节点输出
+最终状态: {"OverAllState":{"data":{"input":"分析机器学习的应用场景","messages":[{"messageType":"USER","metadata":{"messageType":"USER"},"media":[],"text":"分析机器学习的应用场景"},{"messageType":"ASSISTANT","metadata":{"search_info":"","role":"ASSISTANT","messageType":"ASSISTANT","finishReason":"STOP","id":"54b1fea9-c981-4580-9bc2-5a9358d1f584","reasoningContent":""},"toolCalls":[],"media":[],"text":"机器学习（Machine Learning, ML）作为人工智能的核心技术之一，已在众多领域展现出强大的应用潜力。它通过从数据中自动学习模式和规律，实现预测、分类、聚类、推荐等功能。以下是机器学习的主要应用场景分析：\n\n---\n\n### 1. **互联网与电子商务**\n- **个性化推荐系统**  \n  如电商网站（淘宝、京东）、视频平台（Netflix、YouTube）利用协同过滤、深度学习等算法为用户推荐商品或内容。\n- **搜索引擎优化**  \n  通过自然语言处理（NLP）和排序学习（Learning to Rank）提升搜索结果的相关性。\n- **广告投放与点击率预测**  \n  利用机器学习模型预测用户对广告的点击概率，实现精准营销。\n\n---\n\n### 2. **金融科技（FinTech）**\n- **信用评分与风控**  \n  基于用户历史行为、交易记录等数据构建信用评估模型，判断贷款违约风险。\n- **欺诈检测**  \n  使用异常检测算法识别信用卡盗刷、洗钱等异常交易行为。\n- **股票市场预测与量化交易**  \n  利用时间序列分析、强化学习等方法辅助投资决策（需注意市场不确定性）。\n\n---\n\n### 3. **医疗健康**\n- **疾病诊断与辅助决策**  \n  图像识别用于医学影像分析（如X光、CT、MRI），辅助医生诊断癌症、肺炎等疾病。\n- **基因组学与药物研发**  \n  分析基因序列数据，发现致病基因；加速新药分子筛选过程。\n- **健康监测与预测**  \n  可穿戴设备结合机器学习预测心律失常、糖尿病并发症等。\n\n---\n\n### 4. **智能制造与工业自动化**\n- **预测性维护（Predictive Maintenance）**  \n  分析传感器数据预测设备故障，减少停机时间和维修成本。\n- **质量控制**  \n  利用计算机视觉检测产品缺陷（如芯片、汽车零部件）。\n- **生产流程优化**  \n  通过强化学习或回归模型优化参数配置，提高生产效率。\n\n---\n\n### 5. **交通运输与自动驾驶**\n- **智能交通管理**  \n  预测交通流量、优化信号灯控制，缓解拥堵。\n- **自动驾驶**  \n  感知（目标检测、语义分割）、决策（路径规划）、控制（动作执行）均依赖深度学习与强化学习。\n- **路径规划与物流优化**  \n  快递配送路线优化、网约车调度等使用图神经网络或运筹学结合ML的方法。\n\n---\n\n### 6. **自然语言处理（NLP）**\n- **语音识别与合成**  \n  如Siri、小爱同学等智能助手背后的语音转文字、文字转语音技术。\n- **机器翻译**  \n  Google Translate、DeepL 等基于Transformer架构实现高质量翻译。\n- **情感分析与舆情监控**  \n  分析社交媒体评论、新闻文本中的情绪倾向，用于品牌管理或政策制定。\n\n---\n\n### 7. **教育科技（EdTech）**\n- **个性化学习路径推荐**  \n  根据学生的学习行为和成绩推荐适合的学习资源。\n- **智能阅卷与作业批改**  \n  自动批改选择题、填空题甚至作文（结合NLP）。\n- **学习效果预测**  \n  预测学生是否可能挂科，提前干预。\n\n---\n\n### 8. **农业与环境科学**\n- **精准农业**  \n  利用遥感图像和气象数据预测作物产量、病虫害风险。\n- **气候建模与灾害预警**  \n  分析气候变化趋势，预测洪水、干旱等自然灾害。\n- **土壤与水质分析**  \n  传感器数据结合模型评估土地适宜性或污染程度。\n\n---\n\n### 9. **安全与安防**\n- **人脸识别与身份验证**  \n  广泛应用于门禁系统、支付验证、公共安全监控。\n- **网络安全威胁检测**  \n  检测恶意软件、DDoS攻击、异常登录行为等。\n- **视频监控智能分析**  \n  行为识别（如跌倒、打架）、人群密度监测等。\n\n---\n\n### 10. **娱乐与创意产业**\n- **内容生成（AIGC）**  \n  文本生成（如ChatGPT）、图像生成（如Stable Diffusion）、音乐创作等。\n- **游戏AI**  \n  NPC智能行为设计、游戏平衡性调优、玩家行为预测。\n- **影视特效与后期制作**  \n  深度伪造（Deepfake）、自动剪辑、画质增强等。\n\n---\n\n## 总结：机器学习应用的关键特点\n\n| 特点 | 说明 |\n|------|------|\n| **数据驱动** | 所有应用都依赖大量高质量数据 |\n| **自动化决策** | 减少人工干预，提升效率 |\n| **可扩展性强** | 模型一旦训练完成，可快速部署到多个场景 |\n| **持续优化** | 支持在线学习，随时间不断改进性能 |\n\n---\n\n## 挑战与注意事项\n- 数据隐私与伦理问题（如人脸识别滥用）\n- 模型可解释性不足（“黑箱”问题）\n- 过拟合与泛化能力差\n- 对标注数据的依赖高\n- 计算资源消耗大\n\n---\n\n随着算法进步（如大模型、自监督学习）、算力提升和数据积累，机器学习的应用场景将持续拓展，逐步渗透到社会生活的方方面面，推动智能化转型。未来，跨学科融合（如生物+AI、法律+AI）将成为新的增长点。"}]}}}
+最终回复: 机器学习（Machine Learning, ML）作为人工智能的核心技术之一，已在众多领域展现出强大的应用潜力。它通过从数据中自动学习模式和规律，实现预测、分类、聚类、推荐等功能。以下是机器学习的主要应用场景分析：
+
+---
+
+### 1. **互联网与电子商务**
+- **个性化推荐系统**
+  如电商网站（淘宝、京东）、视频平台（Netflix、YouTube）利用协同过滤、深度学习等算法为用户推荐商品或内容。
+- **搜索引擎优化**
+  通过自然语言处理（NLP）和排序学习（Learning to Rank）提升搜索结果的相关性。
+- **广告投放与点击率预测**
+  利用机器学习模型预测用户对广告的点击概率，实现精准营销。
+
+---
+
+### 2. **金融科技（FinTech）**
+- **信用评分与风控**
+  基于用户历史行为、交易记录等数据构建信用评估模型，判断贷款违约风险。
+- **欺诈检测**
+  使用异常检测算法识别信用卡盗刷、洗钱等异常交易行为。
+- **股票市场预测与量化交易**
+  利用时间序列分析、强化学习等方法辅助投资决策（需注意市场不确定性）。
+
+---
+
+### 3. **医疗健康**
+- **疾病诊断与辅助决策**
+  图像识别用于医学影像分析（如X光、CT、MRI），辅助医生诊断癌症、肺炎等疾病。
+- **基因组学与药物研发**
+  分析基因序列数据，发现致病基因；加速新药分子筛选过程。
+- **健康监测与预测**
+  可穿戴设备结合机器学习预测心律失常、糖尿病并发症等。
+
+---
+
+### 4. **智能制造与工业自动化**
+- **预测性维护（Predictive Maintenance）**
+  分析传感器数据预测设备故障，减少停机时间和维修成本。
+- **质量控制**
+  利用计算机视觉检测产品缺陷（如芯片、汽车零部件）。
+- **生产流程优化**
+  通过强化学习或回归模型优化参数配置，提高生产效率。
+
+---
+
+### 5. **交通运输与自动驾驶**
+- **智能交通管理**
+  预测交通流量、优化信号灯控制，缓解拥堵。
+- **自动驾驶**
+  感知（目标检测、语义分割）、决策（路径规划）、控制（动作执行）均依赖深度学习与强化学习。
+- **路径规划与物流优化**
+  快递配送路线优化、网约车调度等使用图神经网络或运筹学结合ML的方法。
+
+---
+
+### 6. **自然语言处理（NLP）**
+- **语音识别与合成**
+  如Siri、小爱同学等智能助手背后的语音转文字、文字转语音技术。
+- **机器翻译**
+  Google Translate、DeepL 等基于Transformer架构实现高质量翻译。
+- **情感分析与舆情监控**
+  分析社交媒体评论、新闻文本中的情绪倾向，用于品牌管理或政策制定。
+
+---
+
+### 7. **教育科技（EdTech）**
+- **个性化学习路径推荐**
+  根据学生的学习行为和成绩推荐适合的学习资源。
+- **智能阅卷与作业批改**
+  自动批改选择题、填空题甚至作文（结合NLP）。
+- **学习效果预测**
+  预测学生是否可能挂科，提前干预。
+
+---
+
+### 8. **农业与环境科学**
+- **精准农业**
+  利用遥感图像和气象数据预测作物产量、病虫害风险。
+- **气候建模与灾害预警**
+  分析气候变化趋势，预测洪水、干旱等自然灾害。
+- **土壤与水质分析**
+  传感器数据结合模型评估土地适宜性或污染程度。
+
+---
+
+### 9. **安全与安防**
+- **人脸识别与身份验证**
+  广泛应用于门禁系统、支付验证、公共安全监控。
+- **网络安全威胁检测**
+  检测恶意软件、DDoS攻击、异常登录行为等。
+- **视频监控智能分析**
+  行为识别（如跌倒、打架）、人群密度监测等。
+
+---
+
+### 10. **娱乐与创意产业**
+- **内容生成（AIGC）**
+  文本生成（如ChatGPT）、图像生成（如Stable Diffusion）、音乐创作等。
+- **游戏AI**
+  NPC智能行为设计、游戏平衡性调优、玩家行为预测。
+- **影视特效与后期制作**
+  深度伪造（Deepfake）、自动剪辑、画质增强等。
+
+---
+
+## 总结：机器学习应用的关键特点
+
+| 特点 | 说明 |
+|------|------|
+| **数据驱动** | 所有应用都依赖大量高质量数据 |
+| **自动化决策** | 减少人工干预，提升效率 |
+| **可扩展性强** | 模型一旦训练完成，可快速部署到多个场景 |
+| **持续优化** | 支持在线学习，随时间不断改进性能 |
+
+---
+
+## 挑战与注意事项
+- 数据隐私与伦理问题（如人脸识别滥用）
+- 模型可解释性不足（“黑箱”问题）
+- 过拟合与泛化能力差
+- 对标注数据的依赖高
+- 计算资源消耗大
+
+---
+
+随着算法进步（如大模型、自监督学习）、算力提升和数据积累，机器学习的应用场景将持续拓展，逐步渗透到社会生活的方方面面，推动智能化转型。未来，跨学科融合（如生物+AI、法律+AI）将成为新的增长点。
+
+--- 示例11：使用 outputType ---
+{
+  "content": "春风拂面柳轻摇，\n细雨润花影自娇。\n燕语呢喃穿翠幕，\n桃红李白满山腰。\n溪流欢唱冰初解，\n草色遥看近却寥。\n最是一年光好处，\n踏青何必远寻桥。",
+  "style": "五言律诗",
+  "title": "春日即景"
+}
+
+--- 示例12：使用 outputSchema ---
+
+--- 示例13：配置记忆 ---
+
+=== 所有示例执行完成 ===
+已与地址为 ''127.0.0.1:7017'，传输: '套接字'' 的目标虚拟机断开连接
+
+进程已结束，退出代码为 0
