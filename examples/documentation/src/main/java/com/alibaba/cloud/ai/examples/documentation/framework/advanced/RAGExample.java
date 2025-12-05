@@ -19,6 +19,7 @@ import com.alibaba.cloud.ai.dashscope.api.DashScopeApi;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import com.alibaba.cloud.ai.graph.agent.ReactAgent;
 
+import io.milvus.v2.client.MilvusClientV2;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.document.Document;
@@ -28,6 +29,7 @@ import org.springframework.ai.tool.function.FunctionToolCallback;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
 
+import org.springframework.ai.vectorstore.milvus.MilvusVectorStore;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -76,16 +78,16 @@ public class RAGExample {
 		// TODO: 请配置您的VectorStore实例
 		// 例如：VectorStore vectorStore = new YourVectorStoreImplementation();
 		// 当前vectorStore未初始化，需要替换为实际的VectorStore实现
-		// VectorStore vectorStore = null; // 请替换为实际的VectorStore实例
+		 VectorStore vectorStore = null; // 请替换为实际的VectorStore实例
 		//VectorStore vectorStore = new YourVectorStoreImplementation();; // 请替换为实际的VectorStore实例
 
 		// 创建 Milvus VectorStore 实例；使用Milvus进行向量存储
-		VectorStore vectorStore = new MilvusVectorStore(MilvusClientV2.create(
-				MilvusConfig.builder()
-						.host("localhost")  // Milvus 服务器地址
-						.port(19530)        // Milvus 服务器端口
-						.build()
-		));
+		//VectorStore vectorStore = new MilvusVectorStore(MilvusClientV2.create(
+		//		MilvusConfig.builder()
+		//				.host("localhost")  // Milvus 服务器地址
+		//				.port(19530)        // Milvus 服务器端口
+		//				.build()
+		//));
 
 		// 检查chatModel和vectorStore是否正确初始化
 		if (chatModel == null || vectorStore == null) {
