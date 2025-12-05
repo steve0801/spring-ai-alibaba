@@ -64,7 +64,7 @@ spring:
 ### 1) 准备环境
 
 ```bash
-export DASHSCOPE_API_KEY=sk-b3a9369901434756aeca650643f68e20
+export DASHSCOPE_API_KEY=your-api-key
 export NACOS_SERVER_ADDR=127.0.0.1:8848
 export NACOS_USERNAME=nacos
 export NACOS_PASSWORD=nacos
