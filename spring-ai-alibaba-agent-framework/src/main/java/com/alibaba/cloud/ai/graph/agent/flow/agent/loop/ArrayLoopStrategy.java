@@ -47,26 +47,39 @@ public class ArrayLoopStrategy implements LoopStrategy {
     }
 
     @Override
+    // 初始化循环状态，从消息中提取JSON数组
     public Map<String, Object> loopInit(OverAllState state) {
+        // 抑制未经检查的类型转换警告
         @SuppressWarnings("unchecked")
+        // 从状态中获取消息列表，如果不存在则返回空列表
         List<Message> messages = (List<Message>) state.value(LoopStrategy.MESSAGE_KEY).orElse(List.of());
+        // 使用转换器将消息转换为列表
         List<?> list = converter.convert(messages);
+        // 如果转换成功，返回初始化的循环状态
         if(list != null) {
             return Map.of(loopCountKey(), 0, loopFlagKey(), true, loopListKey(), list);
         }
+        // 如果转换失败，返回错误状态和错误消息
         return Map.of(loopCountKey(), 0, loopFlagKey(), false, loopListKey(), List.of(),
                 LoopStrategy.MESSAGE_KEY, new SystemMessage("Invalid json array format"));
     }
 
     @Override
+    // 分发循环消息，每次返回数组中的一个元素作为消息
     public Map<String, Object> loopDispatch(OverAllState state) {
+        // 从状态中获取循环列表，如果不存在则返回空列表
         List<?> list = state.value(loopListKey(), List.class).orElse(List.of());
+        // 获取当前循环计数，如果不存在则使用最大循环次数
         int index = state.value(loopCountKey(), maxLoopCount());
+        // 如果索引小于列表大小，说明还有元素需要处理
         if(index < list.size()) {
+            // 创建用户消息，内容为当前索引位置的元素
             UserMessage message = new UserMessage(list.get(index).toString());
+            // 返回更新后的循环状态和消息
             return Map.of(loopCountKey(), index + 1, loopFlagKey(), true,
                     LoopStrategy.MESSAGE_KEY, message);
         } else {
+            // 如果索引超出列表大小，说明循环结束
             return Map.of(loopFlagKey(), false);
         }
     }
@@ -74,17 +87,23 @@ public class ArrayLoopStrategy implements LoopStrategy {
     /**
      * 默认的转换器，将最后一个消息的文本作为json数组
      */
+    // 定义默认的消息转换器，用于将消息列表转换为对象列表
     private static final Converter<List<Message>, List<?>> DEFAULT_MESSAGE_CONVERTER =
             messages -> {
+                // 声明最后一个消息变量
                 String lastMessage;
+                // 如果消息列表不为空，获取最后一条消息的文本
                 if(!messages.isEmpty()) {
                     lastMessage = messages.get(messages.size() - 1).getText();
                 } else {
+                    // 如果消息列表为空，设置为null
                     lastMessage = null;
                 }
+                // 如果最后一条消息为null，返回null
                 if(lastMessage == null) {
                     return null;
                 }
+                // 使用JsonParser将最后一条消息的文本解析为List对象
                 return JsonParser.fromJson(lastMessage, List.class);
             };
 

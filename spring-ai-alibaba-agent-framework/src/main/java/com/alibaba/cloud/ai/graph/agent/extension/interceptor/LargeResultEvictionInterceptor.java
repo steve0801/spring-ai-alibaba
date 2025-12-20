@@ -55,8 +55,10 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 	private static final int DEFAULT_TOOL_TOKEN_LIMIT = 20000;
 	private static final int SAMPLE_LINES_COUNT = 10;
 	private static final int SAMPLE_LINE_MAX_LENGTH = 1000;
+	// 大结果存储目录路径
 	private static final String LARGE_RESULTS_DIR = System.getProperty("user.dir") + "/large_tool_results/";
 
+	// 工具结果过大时的提示消息模板
 	private static final String TOO_LARGE_TOOL_MSG = """
 			Tool result too large, the result of this tool call %s was saved in the filesystem at this path: %s
 			You can read the result from the filesystem by using the read_file tool, but make sure to only read part of the result at a time.
@@ -67,38 +69,47 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 			%s
 			""";
 
+	// 工具调用结果令牌限制阈值
 	private final Integer toolTokenLimitBeforeEvict;
+	// 被排除不进行结果驱逐的工具集合
 	private final Set<String> excludedTools;
+	// 文件系统后端，用于存储大结果
 	private final FilesystemBackend backend;
 
 	private LargeResultEvictionInterceptor(Builder builder) {
+		// 初始化工具令牌限制
 		this.toolTokenLimitBeforeEvict = builder.toolTokenLimitBeforeEvict;
+		// 初始化被排除的工具集合
 		this.excludedTools = builder.excludedTools != null
 			? new HashSet<>(builder.excludedTools)
 			: new HashSet<>();
+		// 初始化文件系统后端
 		this.backend = builder.backend;
 	}
 
+	// 构建器工厂方法
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	// 获取拦截器名称
 	@Override
 	public String getName() {
 		return "LargeResultEviction";
 	}
 
+	// 工具调用拦截处理方法
 	@Override
 	public ToolCallResponse interceptToolCall(ToolCallRequest request, ToolCallHandler handler) {
-		// Execute the tool call
+		// 执行工具调用
 		ToolCallResponse response = handler.call(request);
 
-		// Check if we should evict the result
+		// 检查是否应该驱逐结果
 		if (!shouldEvictResult(request.getToolName(), response.getResult())) {
 			return response;
 		}
 
-		// Process large message and return modified response
+		// 处理大结果并返回修改后的响应
 		return processLargeResult(response, request.getToolCallId());
 	}
 
@@ -110,22 +121,22 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 	 * @return true if the result should be evicted
 	 */
 	private boolean shouldEvictResult(String toolName, String result) {
-		// Don't evict if feature is disabled
+		// 如果功能被禁用则不驱逐
 		if (toolTokenLimitBeforeEvict == null) {
 			return false;
 		}
 
-		// Don't evict excluded tools (e.g., filesystem tools)
+		// 不驱逐被排除的工具（例如文件系统工具）
 		if (excludedTools.contains(toolName)) {
 			return false;
 		}
 
-		// Don't evict if result is null or empty
+		// 如果结果为null或空则不驱逐
 		if (result == null || result.isEmpty()) {
 			return false;
 		}
 
-		// Check if content exceeds token limit (approximation: 4 chars per token)
+		// 检查内容是否超过令牌限制（近似：4个字符约等于1个令牌）
 		return result.length() > 4 * toolTokenLimitBeforeEvict;
 	}
 
@@ -137,31 +148,34 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 	 * @return Modified response with pointer to file
 	 */
 	private ToolCallResponse processLargeResult(ToolCallResponse response, String toolCallId) {
+		// 获取响应内容
 		String content = response.getResult();
 
-		// Sanitize tool call ID for safe file path
+		// 清理工具调用ID以确保文件路径安全
 		String sanitizedId = sanitizeToolCallId(toolCallId);
+		// 构造文件路径
 		String filePath = LARGE_RESULTS_DIR + sanitizedId;
 
-		// Write content to filesystem via backend
+		// 通过后端将内容写入文件系统
 		if (backend != null) {
 			WriteResult writeResult = backend.write(filePath, content);
 			if (writeResult.getError() != null) {
-				// Log warning but continue with eviction message
+				// 记录警告但继续执行驱逐消息
 				System.err.println("Warning: Failed to write large result to filesystem: " + writeResult.getError());
 			}
 		} else {
+			// 后端未配置时记录警告
 			System.err.println("Warning: Backend not configured, large result not persisted to filesystem");
 		}
 
-		// Extract first N lines as sample
+		// 提取前N行作为样本
 		String contentSample = extractContentSample(content);
 
-		// Create modified message with pointer to file
+		// 创建指向文件的修改消息
 		String evictedMessage = String.format(TOO_LARGE_TOOL_MSG,
 			toolCallId, filePath, contentSample);
 
-		// Return modified response
+		// 返回修改后的响应
 		return ToolCallResponse.builder()
 			.content(evictedMessage)
 			.toolName(response.getToolName())
@@ -179,9 +193,11 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 	 * @return Sanitized ID safe for file paths
 	 */
 	private static String sanitizeToolCallId(String toolCallId) {
+		// 如果工具调用ID为null，返回默认值
 		if (toolCallId == null) {
 			return "unknown";
 		}
+		// 使用正则表达式清理ID，只保留字母数字字符、下划线和连字符
 		return toolCallId.replaceAll("[^a-zA-Z0-9_-]", "_");
 	}
 
@@ -193,18 +209,22 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 	 * @return Formatted sample with line numbers
 	 */
 	private static String extractContentSample(String content) {
+		// 按行分割内容
 		String[] lines = content.split("\n");
+		// 创建样本行列表
 		List<String> sampleLines = new ArrayList<>();
 
+		// 提取前SAMPLE_LINES_COUNT行或所有行（取较小值）
 		for (int i = 0; i < Math.min(SAMPLE_LINES_COUNT, lines.length); i++) {
 			String line = lines[i];
-			// Truncate very long lines
+			// 截断过长的行
 			if (line.length() > SAMPLE_LINE_MAX_LENGTH) {
 				line = line.substring(0, SAMPLE_LINE_MAX_LENGTH) + "... (truncated)";
 			}
 			sampleLines.add(line);
 		}
 
+		// 格式化带行号的样本内容
 		return formatContentWithLineNumbers(sampleLines, 1);
 	}
 
@@ -216,15 +236,19 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 	 * @return Formatted content with line numbers
 	 */
 	private static String formatContentWithLineNumbers(List<String> lines, int startLine) {
+		// 创建结果字符串构建器
 		StringBuilder result = new StringBuilder();
+		// 遍历所有行
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines.get(i);
-			// Truncate overly long lines for display
+			// 截断显示过长的行
 			if (line.length() > MAX_LINE_LENGTH) {
 				line = line.substring(0, MAX_LINE_LENGTH) + "... (line truncated)";
 			}
+			// 添加带行号的行
 			result.append(String.format("%6d\t%s\n", startLine + i, line));
 		}
+		// 返回格式化结果
 		return result.toString();
 	}
 
@@ -232,8 +256,11 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 	 * Builder for LargeResultEvictionInterceptor.
 	 */
 	public static class Builder {
+		// 工具令牌限制，默认为20000
 		private Integer toolTokenLimitBeforeEvict = DEFAULT_TOOL_TOKEN_LIMIT;
+		// 被排除的工具集合
 		private Set<String> excludedTools;
+		// 文件系统后端
 		private FilesystemBackend backend;
 
 		/**
@@ -248,6 +275,7 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 		 * Equivalent to Python's tool_token_limit_before_evict parameter.
 		 */
 		public Builder toolTokenLimitBeforeEvict(Integer toolTokenLimitBeforeEvict) {
+			// 设置工具令牌限制
 			this.toolTokenLimitBeforeEvict = toolTokenLimitBeforeEvict;
 			return this;
 		}
@@ -267,6 +295,7 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 		 * </pre>
 		 */
 		public Builder excludeTools(Set<String> excludedTools) {
+			// 设置被排除的工具
 			this.excludedTools = excludedTools;
 			return this;
 		}
@@ -278,9 +307,11 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 		 * @param toolName Name of tool to exclude
 		 */
 		public Builder excludeTool(String toolName) {
+			// 如果排除工具集合为空，则初始化
 			if (this.excludedTools == null) {
 				this.excludedTools = new HashSet<>();
 			}
+			// 添加工具到排除列表
 			this.excludedTools.add(toolName);
 			return this;
 		}
@@ -294,6 +325,7 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 		 * won't be persisted to storage.
 		 */
 		public Builder backend(FilesystemBackend backend) {
+			// 设置自定义后端
 			this.backend = backend;
 			return this;
 		}
@@ -303,12 +335,14 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 		 * Excludes: ls, read_file, write_file, edit_file, glob, grep
 		 */
 		public Builder excludeFilesystemTools() {
+			// 排除标准文件系统工具
 			return excludeTools(Set.of("ls", "read_file", "write_file",
 				"edit_file", "glob", "grep"));
 		}
 
+		// 构建LargeResultEvictionInterceptor实例
 		public LargeResultEvictionInterceptor build() {
-			// Auto-create default LocalFilesystemBackend if not provided and eviction is enabled
+			// 如果未提供后端且启用了驱逐功能，则自动创建默认的LocalFilesystemBackend
 			if (this.backend == null && this.toolTokenLimitBeforeEvict != null) {
 				this.backend = new LocalFilesystemBackend(null, false, 10);
 			}

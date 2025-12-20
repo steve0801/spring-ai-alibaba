@@ -43,35 +43,40 @@ public class WriteFileTool implements BiFunction<WriteFileTool.WriteFileRequest,
 			- When writing to a file, the content will completely replace the existing content.
 			""";
 
+	// 默认构造函数
 	public WriteFileTool() {
 	}
 
+	// 实现BiFunction接口的apply方法，用于向文件写入内容
 	@Override
 	public String apply(WriteFileRequest request, ToolContext toolContext) {
 		try {
+			// 根据文件路径创建Path对象
 			Path path = Paths.get(request.filePath);
 
-			// Check if file already exists
+			// 检查文件是否已存在
 			if (Files.exists(path)) {
 				return "Error: File already exists: " + request.filePath + ". Use edit_file to modify existing files.";
 			}
 
-			// Create parent directories if needed
+			// 如果需要，创建父目录
 			Path parent = path.getParent();
 			if (parent != null && !Files.exists(parent)) {
 				Files.createDirectories(parent);
 			}
 
-			// Write content to file
+			// 将内容写入文件
 			Files.writeString(path, request.content);
 
 			return "Successfully created file: " + request.filePath;
 		}
 		catch (IOException e) {
+			// 处理IO异常，返回错误信息
 			return "Error writing file: " + e.getMessage();
 		}
 	}
 
+	// 创建WriteFileToolCallback的工厂方法
 	public static ToolCallback createWriteFileToolCallback(String description) {
 		return FunctionToolCallback.builder("write_file", new WriteFileTool())
 				.description(description)
@@ -82,19 +87,24 @@ public class WriteFileTool implements BiFunction<WriteFileTool.WriteFileRequest,
 	/**
 	 * Request structure for writing a file.
 	 */
+	// 写入文件请求的数据结构
 	public static class WriteFileRequest {
 
+		// 文件路径属性，必需
 		@JsonProperty(required = true, value = "file_path")
 		@JsonPropertyDescription("The absolute path of the file to create")
 		public String filePath;
 
+		// 文件内容属性，必需
 		@JsonProperty(required = true)
 		@JsonPropertyDescription("The content to write to the file")
 		public String content;
 
+		// 默认构造函数
 		public WriteFileRequest() {
 		}
 
+		// 带参数的构造函数
 		public WriteFileRequest(String filePath, String content) {
 			this.filePath = filePath;
 			this.content = content;

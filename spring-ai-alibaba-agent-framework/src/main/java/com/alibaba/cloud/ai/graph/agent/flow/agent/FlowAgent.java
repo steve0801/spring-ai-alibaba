@@ -33,36 +33,48 @@ import static com.alibaba.cloud.ai.graph.utils.Messageutils.convertToMessages;
 
 public abstract class FlowAgent extends Agent {
 
+	// 中断点列表，在执行流程中可能会在此处暂停
 	protected List<String> interruptBefore;
 
+	// 子代理列表，包含该流程代理管理的所有子代理
 	protected List<Agent> subAgents;
 
+	// 构造函数，初始化流程代理的基本信息和配置
 	protected FlowAgent(String name, String description, CompileConfig compileConfig, List<Agent> subAgents)
 			throws GraphStateException {
+		// 调用父类构造函数初始化名称和描述
 		super(name, description);
+		// 设置编译配置
 		this.compileConfig = compileConfig;
+		// 设置子代理列表
 		this.subAgents = subAgents;
 	}
 
+	// 初始化图结构的方法，用于构建流程代理的状态图
 	@Override
 	protected StateGraph initGraph() throws GraphStateException {
-		// Use FlowGraphBuilder to construct the graph
+		// 使用 FlowGraphBuilder 构造图结构
 		FlowGraphBuilder.FlowGraphConfig config = FlowGraphBuilder.FlowGraphConfig.builder()
 			.name(this.name())
 			.rootAgent(this)
 			.subAgents(this.subAgents());
 
-		// Delegate to specific graph builder based on agent type
+		// 委托给具体的图构建方法，根据代理类型构建特定的图结构
 		return buildSpecificGraph(config);
 	}
 
+	// 调度方法，用于安排代理任务的执行
 	@Override
 	public ScheduledAgentTask schedule(ScheduleConfig scheduleConfig) throws GraphStateException {
+		// 获取并编译图结构
 		CompiledGraph compiledGraph = getAndCompileGraph();
+		// 调用编译后的图进行任务调度
 		return compiledGraph.schedule(scheduleConfig);
 	}
 
+	// 将流程代理转换为状态图的方法
 	public StateGraph asStateGraph(){
+		// 返回当前代理的图结构
 		return getGraph();
 	}
 
@@ -74,13 +86,16 @@ public abstract class FlowAgent extends Agent {
 	 * @return the constructed StateGraph
 	 * @throws GraphStateException if graph construction fails
 	 */
+	// 抽象方法，由子类实现具体的图构建策略
 	protected abstract StateGraph buildSpecificGraph(FlowGraphBuilder.FlowGraphConfig config)
 			throws GraphStateException;
 
+	// 获取编译配置的方法
 	public CompileConfig compileConfig() {
 		return compileConfig;
 	}
 
+	// 获取子代理列表的方法
 	public List<Agent> subAgents() {
 		return this.subAgents;
 	}
@@ -88,6 +103,7 @@ public abstract class FlowAgent extends Agent {
 	/**
 	 * Creates a map with messages and input for String message
 	 */
+	// 创建输入映射的私有方法，将字符串消息转换为包含消息和输入的映射
 	private Map<String, Object> createInputMap(String message) {
 		return Map.of("messages", convertToMessages(message), "input", message);
 	}

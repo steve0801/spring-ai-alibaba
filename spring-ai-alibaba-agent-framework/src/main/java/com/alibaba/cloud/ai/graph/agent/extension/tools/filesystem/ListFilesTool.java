@@ -40,32 +40,41 @@ public class ListFilesTool implements BiFunction<String, ToolContext, String> {
 			- You should almost ALWAYS use this tool before using the Read or Edit tools.
 			""";
 
+	// 默认构造函数
 	public ListFilesTool() {
 	}
 
+	// 实现BiFunction接口的apply方法，用于列出指定目录下的文件
 	@Override
 	public String apply(
 			@ToolParam(description = "The directory path to list files from") String path,
 			ToolContext toolContext) {
-		// Parse path from arguments
+		// 从参数中解析路径
 		File dir = new File(path);
+		// 检查目录是否存在且确实是一个目录
 		if (!dir.exists() || !dir.isDirectory()) {
 			return "Error: Directory not found: " + path;
 		}
 
+		// 获取目录下的所有文件
 		File[] files = dir.listFiles();
+		// 检查是否能读取目录内容
 		if (files == null) {
 			return "Error: Cannot read directory: " + path;
 		}
 
+		// 创建文件路径列表
 		List<String> filePaths = new ArrayList<>();
+		// 遍历所有文件，添加它们的绝对路径到列表中
 		for (File file : files) {
 			filePaths.add(file.getAbsolutePath());
 		}
 
+		// 将所有文件路径用换行符连接后返回
 		return String.join("\n", filePaths);
 	}
 
+	// 创建ListFilesToolCallback的工厂方法
 	public static ToolCallback createListFilesToolCallback(String description) {
 		return FunctionToolCallback.builder("ls", new ListFilesTool())
 				.description(description)

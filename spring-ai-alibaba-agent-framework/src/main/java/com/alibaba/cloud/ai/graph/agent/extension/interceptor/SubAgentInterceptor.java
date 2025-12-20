@@ -211,66 +211,84 @@ public class SubAgentInterceptor extends ModelInterceptor {
 			</example>
 			""";
 
+	// 工具回调列表
 	private final List<ToolCallback> tools;
+	// 系统提示信息
 	private final String systemPrompt;
+	// 子代理映射表
 	private final Map<String, ReactAgent> subAgents;
+	// 是否包含通用目的子代理
 	private final boolean includeGeneralPurpose;
 
 	private SubAgentInterceptor(Builder builder) {
+		// 初始化系统提示信息，如果未设置则使用默认值
 		this.systemPrompt = builder.systemPrompt != null ? builder.systemPrompt : DEFAULT_SYSTEM_PROMPT;
+		// 复制构建器中的子代理映射表
 		this.subAgents = new HashMap<>(builder.subAgents);
+		// 初始化是否包含通用目的子代理标志
 		this.includeGeneralPurpose = builder.includeGeneralPurpose;
 
-		// Add general-purpose agent if enabled
+		// 如果启用了通用目的子代理且设置了默认模型，则创建通用目的代理
 		if (includeGeneralPurpose && builder.defaultModel != null) {
 			ReactAgent generalPurposeAgent = createGeneralPurposeAgent(
 				builder.defaultModel,
 				builder.defaultTools,
 				builder.defaultInterceptors
 			);
+			// 将通用目的代理添加到子代理映射表中
 			this.subAgents.put("general-purpose", generalPurposeAgent);
 		}
 
-		// Create task tool using the factory method
+		// 使用工厂方法创建任务工具
 		ToolCallback taskTool = TaskTool.createTaskToolCallback(
 			this.subAgents,
 			buildTaskToolDescription()
 		);
 
+		// 初始化工具列表
 		this.tools = Collections.singletonList(taskTool);
 	}
 
+	// 创建通用目的代理的方法
 	private ReactAgent createGeneralPurposeAgent(
 			ChatModel model,
 			List<ToolCallback> tools,
 			List<? extends Interceptor> interceptors) {
 
+		// 创建ReactAgent构建器
 		com.alibaba.cloud.ai.graph.agent.Builder builder = ReactAgent.builder()
 				.name("general-purpose")
 				.model(model)
 				.systemPrompt(DEFAULT_SUBAGENT_PROMPT)
 				.saver(new MemorySaver());
 
+		// 如果工具列表不为空，则设置工具
 		if (tools != null && !tools.isEmpty()) {
 			builder.tools(tools);
 		}
 
+		// 如果拦截器列表不为空，则设置拦截器
 		if (interceptors != null && !interceptors.isEmpty()) {
 			builder.interceptors(interceptors);
 		}
 
+		// 构建并返回ReactAgent实例
 		return builder.build();
 	}
 
+	// 构建任务工具描述的方法
 	private String buildTaskToolDescription() {
+		// 创建代理描述构建器
 		StringBuilder agentDescriptions = new StringBuilder();
 
+		// 如果包含通用目的代理，则添加其描述
 		if (includeGeneralPurpose) {
 			agentDescriptions.append("- general-purpose: ")
 					.append(DEFAULT_GENERAL_PURPOSE_DESCRIPTION)
 					.append("\n");
 		}
 
+		// 遍历子代理映射表，添加除通用目的代理外的所有代理描述
 		for (Map.Entry<String, ReactAgent> entry : subAgents.entrySet()) {
 			if (!"general-purpose".equals(entry.getKey())) {
 				agentDescriptions.append("- ")
@@ -282,55 +300,71 @@ public class SubAgentInterceptor extends ModelInterceptor {
 			}
 		}
 
+		// 替换任务工具描述中的占位符并返回
 		return TASK_TOOL_DESCRIPTION.replace("{available_agents}", agentDescriptions.toString());
 	}
 
+	// 构建器工厂方法
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	// 获取工具列表
 	@Override
 	public List<ToolCallback> getTools() {
 		return tools;
 	}
 
+	// 获取拦截器名称
 	@Override
 	public String getName() {
 		return "SubAgent";
 	}
 
+	// 拦截模型调用的方法
 	@Override
 	public ModelResponse interceptModel(ModelRequest request, ModelCallHandler handler) {
-		// Enhance the system prompt with subagent guidance
+		// 增强系统提示信息，添加子代理指导
 		SystemMessage enhancedSystemMessage;
 
+		// 如果原始请求没有系统消息，则使用子代理系统提示
 		if (request.getSystemMessage() == null) {
 			enhancedSystemMessage = new SystemMessage(this.systemPrompt);
 		} else {
+			// 否则将子代理系统提示追加到现有系统消息后
 			enhancedSystemMessage = new SystemMessage(request.getSystemMessage().getText() + "\n\n" + systemPrompt);
 		}
 
-		// Create enhanced request
+		// 创建增强的请求
 		ModelRequest enhancedRequest = ModelRequest.builder(request)
 				.systemMessage(enhancedSystemMessage)
 				.build();
 
-		// Call the handler with enhanced request
+		// 使用增强的请求调用处理器
 		return handler.call(enhancedRequest);
 	}
 
+	// 构建器类
 	public static class Builder {
+		// 系统提示信息
 		private String systemPrompt;
+		// 默认模型
 		private ChatModel defaultModel;
+		// 默认工具列表
 		private List<ToolCallback> defaultTools;
+		// 默认拦截器列表
 		private List<Interceptor> defaultInterceptors;
+		// 默认钩子列表
 		private List<Hook> defaultHooks;
+		// 子代理映射表
 		private Map<String, ReactAgent> subAgents = new HashMap<>();
+		// 是否包含通用目的子代理，默认为true
 		private boolean includeGeneralPurpose = true;
 
 		/**
 		 * Set custom system prompt to guide subagent usage.
 		 */
+		// 设置自定义系统提示信息
 		public Builder systemPrompt(String systemPrompt) {
 			this.systemPrompt = systemPrompt;
 			return this;
@@ -339,6 +373,7 @@ public class SubAgentInterceptor extends ModelInterceptor {
 		/**
 		 * Set the default model to use for subagents.
 		 */
+		// 设置默认模型
 		public Builder defaultModel(ChatModel model) {
 			this.defaultModel = model;
 			return this;
@@ -347,12 +382,14 @@ public class SubAgentInterceptor extends ModelInterceptor {
 		/**
 		 * Set the default tools available to subagents.
 		 */
+		// 设置默认工具列表
 		public Builder defaultTools(List<ToolCallback> tools) {
 			this.defaultTools = tools;
 			return this;
 		}
 
 
+		// 设置默认拦截器
 		public Builder defaultInterceptors(Interceptor... interceptors) {
 			this.defaultInterceptors = Arrays.asList(interceptors);
 			return this;
@@ -361,6 +398,7 @@ public class SubAgentInterceptor extends ModelInterceptor {
 		/**
 		 * Set the default hooks to apply to subagents.
 		 */
+		// 设置默认钩子
 		public Builder defaultHooks(Hook... hooks) {
 			this.defaultHooks = Arrays.asList(hooks);
 			return this;
@@ -369,6 +407,7 @@ public class SubAgentInterceptor extends ModelInterceptor {
 		/**
 		 * Add a custom subagent.
 		 */
+		// 添加自定义子代理
 		public Builder addSubAgent(String name, ReactAgent agent) {
 			this.subAgents.put(name, agent);
 			return this;
@@ -377,6 +416,7 @@ public class SubAgentInterceptor extends ModelInterceptor {
 		/**
 		 * Add a subagent from specification.
 		 */
+		// 根据规范添加子代理
 		public Builder addSubAgent(SubAgentSpec spec) {
 			ReactAgent agent = createSubAgentFromSpec(spec);
 			this.subAgents.put(spec.getName(), agent);
@@ -386,29 +426,34 @@ public class SubAgentInterceptor extends ModelInterceptor {
 		/**
 		 * Whether to include the default general-purpose subagent.
 		 */
+		// 设置是否包含通用目的子代理
 		public Builder includeGeneralPurpose(boolean include) {
 			this.includeGeneralPurpose = include;
 			return this;
 		}
 
+		// 根据规范创建子代理的方法
 		private ReactAgent createSubAgentFromSpec(SubAgentSpec spec) {
+			// 创建ReactAgent构建器
 			com.alibaba.cloud.ai.graph.agent.Builder builder = ReactAgent.builder()
 					.name(spec.getName())
 					.description(spec.getDescription())
 					.instruction(spec.getSystemPrompt())
 					.saver(new MemorySaver());
 
+			// 获取模型，如果规范中未设置则使用默认模型
 			ChatModel model = spec.getModel() != null ? spec.getModel() : defaultModel;
 			if (model != null) {
 				builder.model(model);
 			}
 
+			// 获取工具列表，如果规范中未设置则使用默认工具
 			List<ToolCallback> tools = spec.getTools() != null ? spec.getTools() : defaultTools;
 			if (tools != null && !tools.isEmpty()) {
 				builder.tools(tools);
 			}
 
-			// Apply default interceptors first, then custom ones
+			// 应用默认拦截器，然后应用自定义拦截器
 			List<Interceptor> allInterceptors = new ArrayList<>();
 			if (defaultInterceptors != null) {
 				allInterceptors.addAll(defaultInterceptors);
@@ -417,19 +462,24 @@ public class SubAgentInterceptor extends ModelInterceptor {
 				allInterceptors.addAll(spec.getInterceptors());
 			}
 
+			// 如果拦截器列表不为空，则设置拦截器
 			if (!allInterceptors.isEmpty()) {
 				builder.interceptors(allInterceptors);
 			}
 
+			// 如果默认钩子列表不为空，则设置钩子
 			if (defaultHooks != null) {
 				builder.hooks(defaultHooks);
 			}
 
+			// 设置是否启用循环日志
 			builder.enableLogging(spec.isEnableLoopingLog());
 
+			// 构建并返回ReactAgent实例
 			return builder.build();
 		}
 
+		// 构建SubAgentInterceptor实例
 		public SubAgentInterceptor build() {
 			return new SubAgentInterceptor(this);
 		}

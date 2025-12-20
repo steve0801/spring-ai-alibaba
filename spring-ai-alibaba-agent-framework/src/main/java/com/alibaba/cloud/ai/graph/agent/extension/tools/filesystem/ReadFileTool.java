@@ -56,36 +56,49 @@ Usage:
 	public ReadFileTool() {
 	}
 
+	// 实现BiFunction接口的apply方法，用于读取文件内容
 	@Override
 	public String apply(ReadFileRequest request, ToolContext toolContext) {
 		try {
+			// 根据文件路径创建Path对象
 			Path path = Paths.get(request.filePath);
+			// 读取文件所有行到列表中
 			List<String> allLines = Files.readAllLines(path);
 
-			// Apply pagination
+			// 应用分页逻辑
+			// 确定起始行号，如果请求中指定了offset则使用指定值，否则从第0行开始
 			int start = request.offset != null ? request.offset : 0;
+			// 确定读取行数限制，如果请求中指定了limit则使用指定值，否则默认读取500行
 			int limit = request.limit != null ? request.limit : 500;
+			// 计算结束行号，取起始行号+限制行数与总行数中的较小值
 			int end = Math.min(start + limit, allLines.size());
 
+			// 检查起始行号是否超出文件长度
 			if (start >= allLines.size()) {
 				return "Error: Offset " + start + " is beyond file length " + allLines.size();
 			}
 
+			// 获取指定范围的行列表
 			List<String> lines = allLines.subList(start, end);
 
-			// Add line numbers (cat -n format)
+			// 添加行号（采用cat -n格式）
 			StringBuilder result = new StringBuilder();
+			// 遍历选中的行
 			for (int i = 0; i < lines.size(); i++) {
+				// 格式化行号和内容，行号从起始行号+1开始
 				result.append(String.format("%6d\t%s\n", start + i + 1, lines.get(i)));
 			}
 
+			// 返回格式化后的结果
 			return result.toString();
 		}
 		catch (IOException e) {
+			// 处理IO异常，返回错误信息
 			return "Error reading file: " + e.getMessage();
 		}
 	}
 
+	// 创建ReadFileToolCallback的工厂方法
 	public static ToolCallback createReadFileToolCallback(String description) {
 		return FunctionToolCallback.builder("read_file", new ReadFileTool())
 				.description(description)
@@ -96,23 +109,29 @@ Usage:
 	/**
 	 * Request structure for reading a file.
 	 */
+	// 读取文件请求的数据结构
 	public static class ReadFileRequest {
 
+		// 文件路径属性，必需
 		@JsonProperty(required = true, value = "file_path")
 		@JsonPropertyDescription("The absolute path of the file to read")
 		public String filePath;
 
+		// 偏移量属性，可选
 		@JsonProperty(value = "offset")
 		@JsonPropertyDescription("Line offset to start reading from (default: 0)")
 		public Integer offset;
 
+		// 限制行数属性，可选
 		@JsonProperty(value = "limit")
 		@JsonPropertyDescription("Maximum number of lines to read (default: 500)")
 		public Integer limit;
 
+		// 默认构造函数
 		public ReadFileRequest() {
 		}
 
+		// 带参数的构造函数
 		public ReadFileRequest(String filePath, Integer offset, Integer limit) {
 			this.filePath = filePath;
 			this.offset = offset;

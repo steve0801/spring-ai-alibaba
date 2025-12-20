@@ -29,22 +29,27 @@ import java.util.function.Predicate;
  * @since 2025/11/1
  */
 public final class LoopMode {
+    // 私有构造函数，防止实例化该工具类
     private LoopMode() {
         throw new UnsupportedOperationException();
     }
 
+    // 创建基于固定次数的循环策略
     public static CountLoopStrategy count(int maxCount) {
         return new CountLoopStrategy(maxCount);
     }
 
+    // 创建基于数组的循环策略，使用默认转换器
     public static ArrayLoopStrategy array() {
         return new ArrayLoopStrategy();
     }
 
+    // 创建基于数组的循环策略，使用自定义转换器
     public static ArrayLoopStrategy array(Converter<List<Message>, List<?>> converter) {
         return new ArrayLoopStrategy(converter);
     }
 
+    // 创建基于条件谓词的循环策略
     public static ConditionLoopStrategy condition(Predicate<List<Message>> messagePredicate) {
         return new ConditionLoopStrategy(messagePredicate);
     }

@@ -55,33 +55,40 @@ public class PatchToolCallsInterceptor extends ModelInterceptor {
 
 	private static final Logger log = LoggerFactory.getLogger(PatchToolCallsInterceptor.class);
 
+	// 取消消息模板，用于生成工具调用取消的提示信息
 	private static final String CANCELLATION_MESSAGE_TEMPLATE =
 			"Tool call %s with id %s was cancelled - another message came in before it could be completed.";
 
 	private PatchToolCallsInterceptor(Builder builder) {
-		// Currently no configuration options, but builder pattern allows future extensibility
+		// 目前没有配置选项，但构建器模式允许未来扩展
 	}
 
+	// 构建器工厂方法
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	// 获取拦截器名称
 	@Override
 	public String getName() {
 		return "PatchToolCalls";
 	}
 
+	// 模型调用拦截处理方法
 	@Override
 	public ModelResponse interceptModel(ModelRequest request, ModelCallHandler handler) {
+		// 获取请求中的消息列表
 		List<Message> messages = request.getMessages();
 
+		// 如果消息列表为空，直接调用处理器
 		if (messages == null || messages.isEmpty()) {
 			return handler.call(request);
 		}
 
+		// 修补悬空的工具调用
 		List<Message> patchedMessages = patchDanglingToolCalls(messages);
 
-		// If messages were patched, create a new request with the updated messages
+		// 如果消息被修补过，创建新的请求并调用处理器
 		if (patchedMessages != messages) {
 			ModelRequest patchedRequest = ModelRequest.builder(request)
 					.messages(patchedMessages)
@@ -89,6 +96,7 @@ public class PatchToolCallsInterceptor extends ModelInterceptor {
 			return handler.call(patchedRequest);
 		}
 
+		// 否则直接调用处理器
 		return handler.call(request);
 	}
 
@@ -100,10 +108,12 @@ public class PatchToolCallsInterceptor extends ModelInterceptor {
 	 * @return A new list with patched messages, or the original list if no patching needed
 	 */
 	private List<Message> patchDanglingToolCalls(List<Message> messages) {
+		// 创建修补后的消息列表
 		List<Message> patchedMessages = new ArrayList<>();
+		// 标记是否有修补操作
 		boolean hasPatches = false;
 
-		// Build a map of all tool response IDs for quick lookup
+		// 构建所有工具响应ID的映射，用于快速查找
 		Set<String> existingToolResponseIds = new HashSet<>();
 		for (Message msg : messages) {
 			if (msg instanceof ToolResponseMessage toolResponseMsg) {
@@ -113,27 +123,30 @@ public class PatchToolCallsInterceptor extends ModelInterceptor {
 			}
 		}
 
-		// Iterate through messages and patch dangling tool calls
+		// 遍历消息并修补悬空的工具调用
 		for (int i = 0; i < messages.size(); i++) {
 			Message msg = messages.get(i);
+			// 将消息添加到修补列表中
 			patchedMessages.add(msg);
 
-			// Check if this is an AssistantMessage with tool calls
+			// 检查是否为包含工具调用的助手消息
 			if (msg instanceof AssistantMessage assistantMsg) {
 				List<AssistantMessage.ToolCall> toolCalls = assistantMsg.getToolCalls();
 
+				// 如果存在工具调用
 				if (!toolCalls.isEmpty()) {
-					// Check each tool call to see if it has a corresponding response
+					// 检查每个工具调用是否有对应的响应
 					List<ToolResponseMessage.ToolResponse> missingResponses = new ArrayList<>();
 
 					for (AssistantMessage.ToolCall toolCall : toolCalls) {
 						String toolCallId = toolCall.id();
 
-						// Check if a response exists in the remaining messages
+						// 检查响应是否存在于剩余的消息中
 						boolean hasResponse = existingToolResponseIds.contains(toolCallId);
 
+						// 如果没有响应
 						if (!hasResponse) {
-							// Found a dangling tool call - create a cancellation response
+							// 发现悬空的工具调用 - 创建取消响应
 							String cancellationMsg = String.format(
 									CANCELLATION_MESSAGE_TEMPLATE,
 									toolCall.name(),
@@ -146,11 +159,12 @@ public class PatchToolCallsInterceptor extends ModelInterceptor {
 									cancellationMsg
 							));
 
+							// 记录日志
 							log.info("Patching dangling tool call: {} (id: {})", toolCall.name(), toolCallId);
 						}
 					}
 
-					// Add a ToolResponseMessage with all missing responses
+					// 添加包含所有缺失响应的ToolResponseMessage
 					if (!missingResponses.isEmpty()) {
 						Map<String, Object> metadata = new HashMap<>();
 						metadata.put("patched", true);
@@ -161,6 +175,7 @@ public class PatchToolCallsInterceptor extends ModelInterceptor {
 			}
 		}
 
+		// 如果有修补操作，返回修补后的消息列表，否则返回原始列表
 		return hasPatches ? patchedMessages : messages;
 	}
 

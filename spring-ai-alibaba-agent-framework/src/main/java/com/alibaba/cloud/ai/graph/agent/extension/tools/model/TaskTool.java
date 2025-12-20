@@ -36,31 +36,35 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
  */
 public class TaskTool implements BiFunction<TaskTool.TaskRequest, ToolContext, String> {
 
+	// 存储子代理的映射表
 	private final Map<String, ReactAgent> subAgents;
 
+	// 构造函数，初始化子代理映射表
 	public TaskTool(Map<String, ReactAgent> subAgents) {
 		this.subAgents = subAgents;
 	}
 
+	// 实现BiFunction接口的apply方法，用于执行任务工具
 	@Override
 	public String apply(TaskRequest request, ToolContext toolContext) {
-		// Validate subagent type
+		// 验证子代理类型是否存在
 		if (!subAgents.containsKey(request.subagentType)) {
 			return "Error: invoked agent of type " + request.subagentType +
 					", the only allowed types are " + subAgents.keySet();
 		}
 
-		// Get the subagent
+		// 获取指定类型的子代理
 		ReactAgent subAgent = subAgents.get(request.subagentType);
 
 		try {
-			// Invoke the subagent with the task description
+			// 使用任务描述调用子代理
 			AssistantMessage result = subAgent.call(request.description);
 
-			// Return the subagent's response
+			// 返回子代理的响应文本
 			return result.getText();
 		}
 		catch (Exception e) {
+			// 处理异常，返回错误信息
 			return "Error executing subagent task: " + e.getMessage();
 		}
 	}
@@ -68,6 +72,7 @@ public class TaskTool implements BiFunction<TaskTool.TaskRequest, ToolContext, S
 	/**
 	 * Create a ToolCallback for the task tool.
 	 */
+	// 创建任务工具的ToolCallback的工厂方法
 	public static ToolCallback createTaskToolCallback(Map<String, ReactAgent> subAgents, String description) {
 		return FunctionToolCallback.builder("task", new TaskTool(subAgents))
 				.description(description)
@@ -78,19 +83,24 @@ public class TaskTool implements BiFunction<TaskTool.TaskRequest, ToolContext, S
 	/**
 	 * Request structure for the task tool.
 	 */
+	// 任务工具请求的数据结构
 	public static class TaskRequest {
 
+		// 任务描述属性，必需
 		@JsonProperty(required = true)
 		@JsonPropertyDescription("Detailed description of the task to be performed by the subagent")
 		public String description;
 
+		// 子代理类型属性，必需
 		@JsonProperty(required = true, value = "subagent_type")
 		@JsonPropertyDescription("The type of subagent to use for this task")
 		public String subagentType;
 
+		// 默认构造函数
 		public TaskRequest() {
 		}
 
+		// 带参数的构造函数
 		public TaskRequest(String description, String subagentType) {
 			this.description = description;
 			this.subagentType = subagentType;

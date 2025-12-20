@@ -97,44 +97,56 @@ public class FilesystemInterceptor extends ModelInterceptor {
 	private final String systemPrompt;
 	private final boolean readOnly;
 	private final Map<String, String> customToolDescriptions;
-	// Pattern for directory traversal detection
+	// 用于检测目录遍历的正则表达式模式
 	private static final Pattern TRAVERSAL_PATTERN = Pattern.compile("\\.\\.|~");
 
 	private FilesystemInterceptor(Builder builder) {
+		// 初始化只读模式标志
 		this.readOnly = builder.readOnly;
+		// 初始化系统提示信息，如果没有自定义则使用默认提示
 		this.systemPrompt = builder.systemPrompt != null ? builder.systemPrompt : DEFAULT_SYSTEM_PROMPT;
+		// 初始化自定义工具描述映射
 		this.customToolDescriptions = builder.customToolDescriptions != null
 			? new HashMap<>(builder.customToolDescriptions)
 			: new HashMap<>();
 
-		// Create filesystem tools using factory methods with custom or default descriptions
+		// 使用工厂方法创建文件系统工具，支持自定义或默认描述
 		List<ToolCallback> toolList = new ArrayList<>();
+		// 添加列出文件工具
 		toolList.add(ListFilesTool.createListFilesToolCallback(
 			customToolDescriptions.getOrDefault("ls", ListFilesTool.DESCRIPTION)
 		));
+		// 添加读取文件工具
 		toolList.add(ReadFileTool.createReadFileToolCallback(
 			customToolDescriptions.getOrDefault("read_file", ReadFileTool.DESCRIPTION)
 		));
 
+		// 如果不是只读模式，添加写入和编辑文件工具
 		if (!readOnly) {
+			// 添加写入文件工具
 			toolList.add(WriteFileTool.createWriteFileToolCallback(
 				customToolDescriptions.getOrDefault("write_file", WriteFileTool.DESCRIPTION)
 			));
+			// 添加编辑文件工具
 			toolList.add(EditFileTool.createEditFileToolCallback(
 				customToolDescriptions.getOrDefault("edit_file", EditFileTool.DESCRIPTION)
 			));
 		}
 
+		// 添加全局搜索工具
 		toolList.add(GlobTool.createGlobToolCallback(
 			customToolDescriptions.getOrDefault("glob", GlobTool.DESCRIPTION)
 		));
+		// 添加文本搜索工具
 		toolList.add(GrepTool.createGrepToolCallback(
 			customToolDescriptions.getOrDefault("grep", GrepTool.DESCRIPTION)
 		));
 
+		// 将工具列表设为不可变
 		this.tools = Collections.unmodifiableList(toolList);
 	}
 
+	// 构建器工厂方法
 	public static Builder builder() {
 		return new Builder();
 	}
@@ -149,27 +161,31 @@ public class FilesystemInterceptor extends ModelInterceptor {
 	 * @throws IllegalArgumentException if path is invalid
 	 */
 	public static String validatePath(String path, List<String> allowedPrefixes) {
+		// 检查路径是否包含目录遍历字符
 		if (TRAVERSAL_PATTERN.matcher(path).find()) {
 			throw new IllegalArgumentException("Path traversal not allowed: " + path);
 		}
 
-		// Normalize path
+		// 规范化路径
 		String normalized = path.replace("\\", "/");
 		normalized = Paths.get(normalized).normalize().toString().replace("\\", "/");
 
+		// 确保路径以"/"开头
 		if (!normalized.startsWith("/")) {
 			normalized = "/" + normalized;
 		}
 
-		// Check allowed prefixes if specified
+		// 如果指定了允许的前缀，检查路径是否符合要求
 		if (allowedPrefixes != null && !allowedPrefixes.isEmpty()) {
 			boolean hasValidPrefix = false;
+			// 遍历所有允许的前缀
 			for (String prefix : allowedPrefixes) {
 				if (normalized.startsWith(prefix)) {
 					hasValidPrefix = true;
 					break;
 				}
 			}
+			// 如果没有匹配的前缀，抛出异常
 			if (!hasValidPrefix) {
 				throw new IllegalArgumentException(
 					"Path must start with one of " + allowedPrefixes + ": " + path
@@ -177,35 +193,41 @@ public class FilesystemInterceptor extends ModelInterceptor {
 			}
 		}
 
+		// 返回规范化的路径
 		return normalized;
 	}
 
+	// 获取工具列表
 	@Override
 	public List<ToolCallback> getTools() {
 		return tools;
 	}
 
+	// 获取拦截器名称
 	@Override
 	public String getName() {
 		return "Filesystem";
 	}
 
+	// 模型拦截处理方法
 	@Override
 	public ModelResponse interceptModel(ModelRequest request, ModelCallHandler handler) {
 		SystemMessage enhancedSystemMessage;
 
+		// 如果原始请求没有系统消息，则使用文件系统提示
 		if (request.getSystemMessage() == null) {
 			enhancedSystemMessage = new SystemMessage(this.systemPrompt);
 		} else {
+			// 否则将文件系统提示追加到现有系统消息后
 			enhancedSystemMessage = new SystemMessage(request.getSystemMessage().getText() + "\n\n" + systemPrompt);
 		}
 
-		// Create enhanced request
+		// 创建增强的请求
 		ModelRequest enhancedRequest = ModelRequest.builder(request)
 				.systemMessage(enhancedSystemMessage)
 				.build();
 
-		// Call the handler with enhanced request
+		// 使用增强的请求调用处理器
 		return handler.call(enhancedRequest);
 	}
 
@@ -226,6 +248,7 @@ public class FilesystemInterceptor extends ModelInterceptor {
 		 * Set to null to disable system prompt injection.
 		 */
 		public Builder systemPrompt(String systemPrompt) {
+			// 设置自定义系统提示
 			this.systemPrompt = systemPrompt;
 			return this;
 		}
@@ -236,6 +259,7 @@ public class FilesystemInterceptor extends ModelInterceptor {
 		 * Default: false
 		 */
 		public Builder readOnly(boolean readOnly) {
+			// 设置只读模式
 			this.readOnly = readOnly;
 			return this;
 		}
@@ -256,6 +280,7 @@ public class FilesystemInterceptor extends ModelInterceptor {
 		 *
 		 */
 		public Builder customToolDescriptions(Map<String, String> customToolDescriptions) {
+			// 设置自定义工具描述
 			this.customToolDescriptions = customToolDescriptions;
 			return this;
 		}
@@ -268,13 +293,16 @@ public class FilesystemInterceptor extends ModelInterceptor {
 		 * @param description Custom description for the tool
 		 */
 		public Builder addCustomToolDescription(String toolName, String description) {
+			// 如果自定义工具描述映射为空，则初始化
 			if (this.customToolDescriptions == null) {
 				this.customToolDescriptions = new HashMap<>();
 			}
+			// 添加单个工具的自定义描述
 			this.customToolDescriptions.put(toolName, description);
 			return this;
 		}
 
+		// 构建FilesystemInterceptor实例
 		public FilesystemInterceptor build() {
 			return new FilesystemInterceptor(this);
 		}
