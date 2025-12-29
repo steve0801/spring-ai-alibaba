@@ -96,30 +96,44 @@ public interface BaseCheckpointSaver {
 		return mapper;
 	}
 
+	// 定义Tag记录类，用于表示线程ID和检查点集合的组合
 	record Tag(String threadId, Collection<Checkpoint> checkpoints) {
+		// Tag记录的构造函数，对传入的参数进行处理
 		public Tag(String threadId, Collection<Checkpoint> checkpoints) {
+			// 设置线程ID
 			this.threadId = threadId;
+			// 如果检查点集合不为null则创建不可变副本，否则创建空列表
 			this.checkpoints = ofNullable(checkpoints).map(List::copyOf).orElseGet(List::of);
 		}
 	}
 
+	// 默认的release方法，释放配置相关的资源，返回null表示不执行任何操作
 	default Tag release(RunnableConfig config) throws Exception {
+		// 返回null表示默认不执行任何操作
 		return null;
 	}
 
+	// 列出指定配置的所有检查点
 	Collection<Checkpoint> list(RunnableConfig config);
 
+	// 获取指定配置的检查点
 	Optional<Checkpoint> get(RunnableConfig config);
 
+	// 保存检查点到指定配置
 	RunnableConfig put(RunnableConfig config, Checkpoint checkpoint) throws Exception;
 
+	// 清除指定配置的检查点
 	boolean clear(RunnableConfig config);
 
+	// 获取链表中最后一个检查点的默认方法
 	default Optional<Checkpoint> getLast(LinkedList<Checkpoint> checkpoints, RunnableConfig config) {
+		// 如果检查点链表为空或null，返回空Optional，否则返回链表头部的检查点
 		return (checkpoints == null || checkpoints.isEmpty()) ? Optional.empty() : ofNullable(checkpoints.peek());
 	}
 
+	// 将检查点列表转换为链表的默认方法
 	default LinkedList<Checkpoint> getLinkedList(List<Checkpoint> checkpoints) {
+		// 如果检查点列表不为null则创建链表副本，否则创建空链表
 		return Objects.nonNull(checkpoints) ? new LinkedList<>(checkpoints) : new LinkedList<>();
 	}
 

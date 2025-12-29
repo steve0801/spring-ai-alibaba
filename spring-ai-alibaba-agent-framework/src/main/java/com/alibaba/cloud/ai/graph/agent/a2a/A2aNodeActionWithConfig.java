@@ -105,8 +105,8 @@ public class A2aNodeActionWithConfig implements NodeActionWithConfig {
 		this.shareState = shareState;
 	}
 
-	@Override
 	// 应用节点动作的核心方法，接收状态和配置参数
+	@Override
 	public Map<String, Object> apply(OverAllState state, RunnableConfig config) throws Exception {
 		// 获取子图的运行配置
 		RunnableConfig subGraphRunnableConfig = getSubGraphRunnableConfig(config);

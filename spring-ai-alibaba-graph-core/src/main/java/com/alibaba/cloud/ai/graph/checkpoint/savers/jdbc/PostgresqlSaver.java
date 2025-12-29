@@ -25,13 +25,16 @@ import javax.sql.DataSource;
  * @author yuluo-yx
  * @since 1.1.0.0-M4
  */
+// PostgreSQL检查点保存器类，继承自AbstractJdbcSaver
 public class PostgresqlSaver extends AbstractJdbcSaver {
 
 	/**
 	 * Constructs a PostgresqlSaver with the given DataSource.
 	 * @param dataSource the JDBC DataSource to use for database connections
 	 */
+	// 使用给定的数据源构造PostgresqlSaver
 	public PostgresqlSaver(DataSource dataSource) {
+		// 调用父类构造函数
 		super(dataSource);
 	}
 
@@ -40,7 +43,9 @@ public class PostgresqlSaver extends AbstractJdbcSaver {
 	 * @param dataSource the JDBC DataSource to use for database connections
 	 * @param objectMapper the ObjectMapper for JSON serialization
 	 */
+	// 使用给定的数据源和对象映射器构造PostgresqlSaver
 	public PostgresqlSaver(DataSource dataSource, ObjectMapper objectMapper) {
+		// 调用父类构造函数
 		super(dataSource, objectMapper);
 	}
 
@@ -50,12 +55,16 @@ public class PostgresqlSaver extends AbstractJdbcSaver {
 	 * @param objectMapper the ObjectMapper for JSON serialization
 	 * @param tableName the name of the database table to store checkpoints
 	 */
+	// 使用自定义表名构造PostgresqlSaver
 	public PostgresqlSaver(DataSource dataSource, ObjectMapper objectMapper, String tableName) {
+		// 调用父类构造函数
 		super(dataSource, objectMapper, tableName);
 	}
 
+	// 重写创建表SQL的方法
 	@Override
 	protected String getCreateTableSql() {
+		// 返回PostgreSQL格式的创建表SQL语句
 		return """
 				CREATE TABLE IF NOT EXISTS %s (
 					thread_id VARCHAR(255) PRIMARY KEY,
@@ -65,9 +74,11 @@ public class PostgresqlSaver extends AbstractJdbcSaver {
 				""".formatted(tableName);
 	}
 
+	// 重写插入SQL的方法
 	@Override
 	protected String getInsertSql() {
 		// PostgreSQL's UPSERT syntax for atomic insert or update
+		// PostgreSQL的UPSERT语法，用于原子插入或更新
 		return """
 				INSERT INTO %s (thread_id, checkpoint_data, updated_at)
 				VALUES (?, ?, CURRENT_TIMESTAMP)

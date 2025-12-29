@@ -22,23 +22,35 @@ import io.opentelemetry.context.Context;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
+// 定义异步命令动作接口，继承BiFunction函数式接口，接收状态和配置，返回Command的CompletableFuture
 public interface AsyncCommandAction extends BiFunction<OverAllState, RunnableConfig, CompletableFuture<Command>> {
 
+	// 将同步命令动作转换为异步命令动作的静态方法
 	static AsyncCommandAction node_async(CommandAction syncAction) {
+		// 返回一个接收状态和配置参数的Lambda表达式
 		return (state, config) -> {
+			// 获取当前OpenTelemetry上下文
 			Context context = Context.current();
+			// 创建一个Command类型的CompletableFuture实例
 			var result = new CompletableFuture<Command>();
+			// 尝试执行同步动作并完成future
 			try {
+				// 执行同步动作并将结果设置到CompletableFuture中
 				result.complete(syncAction.apply(state, config));
 			}
+			// 捕获执行过程中可能发生的异常
 			catch (Exception e) {
+				// 当发生异常时，将异常设置到CompletableFuture中
 				result.completeExceptionally(e);
 			}
+			// 返回CompletableFuture实例
 			return result;
 		};
 	}
 
+	// 根据异步边动作创建异步命令动作的静态方法
 	static AsyncCommandAction of(AsyncEdgeAction action) {
+		// 返回一个接收状态和配置参数的Lambda表达式，其中配置参数未使用
 		return (state, config) -> action.apply(state).thenApply(Command::new);
 	}
 

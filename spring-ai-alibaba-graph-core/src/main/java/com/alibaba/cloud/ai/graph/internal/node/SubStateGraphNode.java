@@ -19,20 +19,28 @@ package com.alibaba.cloud.ai.graph.internal.node;
 import com.alibaba.cloud.ai.graph.StateGraph;
 import com.alibaba.cloud.ai.graph.SubGraphNode;
 
+	// 子状态图节点类，继承自Node并实现SubGraphNode接口
 public class SubStateGraphNode extends Node implements SubGraphNode {
 
+	// 子图的状态图实例
 	private final StateGraph subGraph;
 
+	// 构造函数，创建子状态图节点
 	public SubStateGraphNode(String id, StateGraph subGraph) {
+		// 调用父类构造函数，只传入ID
 		super(id);
+		// 初始化子图
 		this.subGraph = subGraph;
 	}
 
+	// 获取子图的方法
 	public StateGraph subGraph() {
 		return subGraph;
 	}
 
+	// 格式化节点ID的方法
 	public String formatId(String nodeId) {
+		// 使用SubGraphNode接口的静态方法格式化ID
 		return SubGraphNode.formatId(id(), nodeId);
 	}
 

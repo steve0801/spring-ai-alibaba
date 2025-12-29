@@ -24,42 +24,44 @@ import java.util.Optional;
  * Represents an entity that can have different versions associated with it. Experimental
  * feature
  */
+	// 版本化实体接口，定义了与版本相关的操作方法
 public interface HasVersions {
 
 	/**
-	 * Retrieves a collection of integer versions associated with the specified thread ID.
-	 * @param threadId the ID of the thread for which to retrieve version information
-	 * @return a {@code Collection<Integer>} containing the versions, or an empty
-	 * collection if no versions are found
+	 * 获取与指定线程ID关联的整数版本集合
+	 * @param threadId 要检索版本信息的线程ID
+	 * @return 包含版本的Collection<Integer>，如果未找到版本则返回空集合
 	 */
+	// 根据线程ID获取版本集合
 	Collection<Integer> versionsByThreadId(String threadId);
 
 	/**
-	 * Retrieves the collection of versions associated with a specific thread ID from the
-	 * given {@link RunnableConfig}.
-	 * @param config The configuration object containing the thread ID information.
-	 * @return A {@code Collection<Integer>} representing the versions associated with the
-	 * thread ID, or an empty collection if not specified.
+	 * 从给定的RunnableConfig中获取与特定线程ID关联的版本集合
+	 * @param config 包含线程ID信息的配置对象
+	 * @return 表示与线程ID关联的版本的Collection<Integer>，如果没有指定则返回空集合
 	 */
+	// 根据配置对象获取版本集合的默认实现
 	default Collection<Integer> versionsByThreadId(RunnableConfig config) {
+		// 从配置中获取线程ID，如果不存在则为null，然后调用基于字符串线程ID的方法
 		return versionsByThreadId(config.threadId().orElse(null));
 	}
 
 	/**
-	 * Retrieves the last version associated with a specific thread ID.
-	 * @param threadId The unique identifier of the thread.
-	 * @return An {@link Optional} containing the last version if found, otherwise an
-	 * empty {@link Optional}.
+	 * 获取与特定线程ID关联的最后版本
+	 * @param threadId 线程的唯一标识符
+	 * @return 如果找到则包含最后版本的Optional，否则为空Optional
 	 */
+	// 根据线程ID获取最后版本
 	Optional<Integer> lastVersionByThreadId(String threadId);
 
 	/**
-	 * Retrieves the last version associated with a specific thread ID.
-	 * @param config The configuration containing the thread ID.
-	 * @return An {@link Optional} containing the last version if found, or an empty
-	 * {@link Optional} otherwise.
+	 * 获取与特定线程ID关联的最后版本
+	 * @param config 包含线程ID的配置
+	 * @return 如果找到则包含最后版本的Optional，否则为空Optional
 	 */
+	// 根据配置对象获取最后版本的默认实现
 	default Optional<Integer> lastVersionByThreadId(RunnableConfig config) {
+		// 从配置中获取线程ID，如果不存在则为null，然后调用基于字符串线程ID的方法
 		return lastVersionByThreadId(config.threadId().orElse(null));
 	}
 

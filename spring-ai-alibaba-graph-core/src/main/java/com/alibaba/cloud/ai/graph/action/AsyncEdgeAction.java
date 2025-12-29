@@ -41,16 +41,25 @@ public interface AsyncEdgeAction extends Function<OverAllState, CompletableFutur
 	 * @param syncAction the synchronous edge action
 	 * @return an asynchronous edge action
 	 */
+	// 将同步边动作转换为异步边动作的静态方法
 	static AsyncEdgeAction edge_async(EdgeAction syncAction) {
+		// 返回一个接收状态参数的Lambda表达式，实现异步边动作
 		return state -> {
+			// 获取当前OpenTelemetry上下文
 			Context context = Context.current();
+			// 创建一个String类型的CompletableFuture实例
 			CompletableFuture<String> result = new CompletableFuture<>();
+			// 尝试执行同步动作并完成future
 			try {
+				// 执行同步边动作并将结果设置到CompletableFuture中
 				result.complete(syncAction.apply(state));
 			}
+			// 捕获执行过程中可能发生的异常
 			catch (Exception e) {
+				// 当发生异常时，将异常设置到CompletableFuture中
 				result.completeExceptionally(e);
 			}
+			// 返回CompletableFuture实例
 			return result;
 		};
 	}

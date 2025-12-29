@@ -36,47 +36,53 @@ import static java.util.Optional.ofNullable;
  * {@link HasVersions}. It provides methods to save checkpoints with versioning and
  * retrieve them based on thread IDs and versions. Experimental feature
  */
+	// 版本化内存保存器类，实现BaseCheckpointSaver和HasVersions接口
 public class VersionedMemorySaver implements BaseCheckpointSaver, HasVersions {
 
+	// 按线程ID存储检查点历史记录的映射表，每个线程对应一个按版本排序的树映射
 	final Map<String, TreeMap<Integer, Tag>> _checkpointsHistoryByThread = new HashMap<>();
 
+	// 无版本内存保存器实例，用于处理非版本化操作
 	final MemorySaver noVersionSaver = new MemorySaver();
 
+	// 可重入锁，用于线程安全操作
 	private final ReentrantLock _lock = new ReentrantLock();
 
 	/**
-	 * Default constructor for the {@link VersionedMemorySaver} class. Initializes a new
-	 * instance of the class with default settings.
+	 * VersionedMemorySaver类的默认构造函数。初始化具有默认设置的类的新实例。
 	 */
 	public VersionedMemorySaver() {
 	}
 
 	/**
-	 * Retrieves the checkpoint history for a specific thread.
-	 * @param threadId The ID of the thread whose checkpoint history is to be retrieved.
-	 * @return An {@link Optional} containing the {@link TreeMap<Integer, Tag>}
-	 * representing the checkpoint history if the thread exists; otherwise, an empty
-	 * {@code Optional}.
+	 * 根据指定的线程ID检索检查点历史记录
+	 * @param threadId 要检索检查点历史记录的线程ID
+	 * @return 如果线程存在，则返回包含表示检查点历史记录的TreeMap<Integer, Tag>的Optional；否则返回空Optional
 	 */
+	// 根据线程ID获取检查点历史记录
 	private Optional<TreeMap<Integer, Tag>> getCheckpointHistoryByThread(String threadId) {
+		// 从映射表中根据线程ID获取检查点历史记录，如果不存在则返回空Optional
 		return ofNullable(_checkpointsHistoryByThread.get(threadId));
 		// .orElseThrow( () -> new IllegalArgumentException( format("Thread %s not found",
 		// threadId )) );
 	}
 
 	/**
-	 * Retrieves an optional tag based on the provided version.
-	 * @param checkpointsHistory the map containing historical tags indexed by versions
-	 * @param threadVersion the version to retrieve the tag for
-	 * @return an {@link Optional} containing the tag associated with the given version,
-	 * or an empty optional if not found
+	 * 根据提供的版本检索可选的标签
+	 * @param checkpointsHistory 包含按版本索引的历史标签的映射
+	 * @param threadVersion 要检索标签的版本
+	 * @return 包含给定版本关联标签的Optional，如果未找到则返回空Optional
 	 */
+	// 根据版本获取标签
 	final Optional<Tag> getTagByVersion(TreeMap<Integer, Tag> checkpointsHistory, int threadVersion) {
+		// 获取锁以确保线程安全
 		_lock.lock();
 		try {
+			// 从历史记录映射中获取指定版本的标签
 			return ofNullable(checkpointsHistory.get(threadVersion));
 
 		}
+		// 确保在操作完成后释放锁
 		finally {
 			_lock.unlock();
 		}
@@ -84,138 +90,167 @@ public class VersionedMemorySaver implements BaseCheckpointSaver, HasVersions {
 	}
 
 	/**
-	 * Retrieves the checkpoints for a specific version of a thread.
-	 * @param threadId the ID of the thread
-	 * @param threadVersion the version of the thread
-	 * @return a collection of checkpoints for the specified thread version
-	 * @throws IllegalArgumentException if the version is not found for the given thread
+	 * 获取特定线程版本的检查点
+	 * @param threadId 线程ID
+	 * @param threadVersion 线程版本
+	 * @return 指定线程版本的检查点集合
+	 * @throws IllegalArgumentException 如果给定线程找不到版本
 	 */
+	// 根据线程版本获取检查点
 	final Collection<Checkpoint> getCheckpointsByVersion(String threadId, int threadVersion) {
 
+		// 获取锁以确保线程安全
 		_lock.lock();
 		try {
+			// 获取指定线程的历史记录，然后获取指定版本的标签，再获取标签中的检查点
 			return getCheckpointHistoryByThread(threadId).map(history -> history.get(threadVersion))
 				.map(Tag::checkpoints)
+				// 如果未找到版本，则抛出IllegalArgumentException异常
 				.orElseThrow(() -> new IllegalArgumentException(
 						format("Version %s for thread %s not found", threadVersion, threadId)));
 
 		}
+		// 确保在操作完成后释放锁
 		finally {
 			_lock.unlock();
 		}
 	}
 
 	/**
-	 * Returns a collection of versions associated with the specified thread ID.
-	 * @param threadId the ID of the thread to retrieve versions for; if {@code null},
-	 * uses a default value
-	 * @return a collection of versions, or an empty collection if no versions are found
+	 * 返回与指定线程ID关联的版本集合
+	 * @param threadId 要检索版本的线程ID；如果为null，则使用默认值
+	 * @return 版本集合，如果没有找到版本则返回空集合
 	 */
+	// 获取指定线程ID的版本列表
 	@Override
 	public Collection<Integer> versionsByThreadId(String threadId) {
+		// 获取线程ID的检查点历史记录，并返回其键集合（版本号集合）
 		return getCheckpointHistoryByThread(ofNullable(threadId).orElse(THREAD_ID_DEFAULT))
 			.map(history -> (Collection<Integer>) history.keySet())
+			// 如果未找到历史记录，则返回空集合
 			.orElse(Collections.emptyList());
 	}
 
 	/**
-	 * Retrieves the last version by thread ID.
-	 * @param threadId the ID of the thread to retrieve the last version for, or
-	 * {@code null} if not specified
-	 * @return an {@link Optional<Integer>} containing the last version number, or an
-	 * empty(Optional) if no versions are found
+	 * 获取线程ID的最后版本
+	 * @param threadId 要检索最后版本的线程ID，如果未指定则为null
+	 * @return 包含最后版本号的Optional，如果没有找到版本则为空Optional
 	 */
+	// 获取线程ID的最新版本
 	@Override
 	public Optional<Integer> lastVersionByThreadId(String threadId) {
+		// 获取线程ID的检查点历史记录，并返回其最后的键（最大版本号）
 		return getCheckpointHistoryByThread(ofNullable(threadId).orElse(THREAD_ID_DEFAULT)).map(TreeMap::lastKey);
 	}
 
 	/**
-	 * Lists checkpoints based on the provided configuration.
-	 * @param config The {@link RunnableConfig} object containing configuration details.
-	 * @return A collection of {@link Checkpoint} objects.
-	 * @throws RuntimeException If an error occurs during the listing process.
+	 * 根据提供的配置列出检查点
+	 * @param config 包含配置详细信息的RunnableConfig对象
+	 * @return Checkpoint对象的集合
+	 * @throws RuntimeException 如果在列出过程中发生错误
 	 */
+	// 列出检查点
 	@Override
 	public Collection<Checkpoint> list(RunnableConfig config) {
+		// 获取锁以确保线程安全
 		_lock.lock();
 		try {
+			// 使用无版本保存器列出检查点
 			return noVersionSaver.list(config);
 		}
+		// 确保在操作完成后释放锁
 		finally {
 			_lock.unlock();
 		}
 	}
 
 	/**
-	 * Retrieves an optional checkpoint for the given configuration.
-	 * @param config The configuration to retrieve the checkpoint for, not null.
-	 * @return Optional containing the checkpoint if found, or empty if not found.
+	 * 获取给定配置的可选检查点
+	 * @param config 用于检索检查点的配置，不为null
+	 * @return 如果找到则包含检查点的Optional，如果未找到则为空
 	 */
+	// 获取检查点
 	@Override
 	public Optional<Checkpoint> get(RunnableConfig config) {
 
+		// 获取锁以确保线程安全
 		_lock.lock();
 		try {
 
+			// 使用无版本保存器获取检查点
 			return noVersionSaver.get(config);
 
 		}
+		// 确保在操作完成后释放锁
 		finally {
 			_lock.unlock();
 		}
 	}
 
 	/**
-	 * Updates or inserts the given {@code RunnableConfig} with the specified
-	 * {@link Checkpoint}.
-	 * @param config the {@code RunnableConfig} to be updated or inserted
-	 * @param checkpoint the {@link Checkpoint} associated with the {@code RunnableConfig}
-	 * @return the previous {@code RunnableConfig} if present, otherwise null
-	 * @throws Exception if an error occurs during the update or insertion
+	 * 使用指定的检查点更新或插入给定的RunnableConfig
+	 * @param config 要更新或插入的RunnableConfig
+	 * @param checkpoint 与RunnableConfig关联的Checkpoint
+	 * @return 如果存在则返回之前的RunnableConfig，否则返回null
+	 * @throws Exception 如果在更新或插入过程中发生错误
 	 */
+	// 保存检查点
 	@Override
 	public RunnableConfig put(RunnableConfig config, Checkpoint checkpoint) throws Exception {
 
+		// 获取锁以确保线程安全
 		_lock.lock();
 		try {
+			// 使用无版本保存器保存检查点
 			return noVersionSaver.put(config, checkpoint);
 		}
+		// 确保在操作完成后释放锁
 		finally {
 			_lock.unlock();
 		}
 	}
 
+	// 清除检查点配置
 	@Override
 	public boolean clear(RunnableConfig config) {
+		// 返回false表示不支持清除操作
 		return false;
 	}
 
 	/**
-	 * Releases a {@link Tag} based on the provided {@link RunnableConfig}.
-	 * @param config The configuration for the release operation.
-	 * @return A {@link Tag} representing the released tag.
-	 * @throws Exception If an error occurs during the release process.
+	 * 基于提供的RunnableConfig释放标签
+	 * @param config 释放操作的配置
+	 * @return 表示释放标签的Tag
+	 * @throws Exception 如果在释放过程中发生错误
 	 */
+	// 释放标签
 	@Override
 	public Tag release(RunnableConfig config) throws Exception {
 
+		// 获取锁以确保线程安全
 		_lock.lock();
 		try {
 
+			// 获取配置中的线程ID，如果不存在则使用默认值
 			var threadId = config.threadId().orElse(THREAD_ID_DEFAULT);
 
+			// 使用无版本保存器释放标签
 			var tag = noVersionSaver.release(config);
 
+			// 获取或创建线程的检查点历史记录映射
 			var checkpointsHistory = _checkpointsHistoryByThread.computeIfAbsent(threadId, k -> new TreeMap<>());
 
+			// 获取当前最大版本号，如果不存在则为0
 			var threadVersion = ofNullable(checkpointsHistory.lastEntry()).map(Map.Entry::getKey).orElse(0);
 
+			// 将新版本的标签存入历史记录
 			checkpointsHistory.put(threadVersion + 1, tag);
 
+			// 返回释放的标签
 			return tag;
 
 		}
+		// 确保在操作完成后释放锁
 		finally {
 			_lock.unlock();
 		}

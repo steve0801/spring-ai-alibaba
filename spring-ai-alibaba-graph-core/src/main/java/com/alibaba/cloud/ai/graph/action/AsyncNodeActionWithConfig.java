@@ -33,16 +33,25 @@ public interface AsyncNodeActionWithConfig
 	 */
 	CompletableFuture<Map<String, Object>> apply(OverAllState state, RunnableConfig config);
 
+	// 将同步节点动作（带配置）转换为异步节点动作（带配置）的静态方法
 	static AsyncNodeActionWithConfig node_async(NodeActionWithConfig syncAction) {
+		// 返回一个接收状态和配置参数的Lambda表达式，实现异步节点动作（带配置）
 		return (state, config) -> {
+			// 获取当前OpenTelemetry上下文
 			Context context = Context.current();
+			// 创建一个Map<String, Object>类型的CompletableFuture实例
 			CompletableFuture<Map<String, Object>> result = new CompletableFuture<>();
+			// 尝试执行同步动作并完成future
 			try {
+				// 执行同步节点动作（带配置）并将结果设置到CompletableFuture中
 				result.complete(syncAction.apply(state, config));
 			}
+			// 捕获执行过程中可能发生的异常
 			catch (Exception e) {
+				// 当发生异常时，将异常设置到CompletableFuture中
 				result.completeExceptionally(e);
 			}
+			// 返回CompletableFuture实例
 			return result;
 		};
 	}

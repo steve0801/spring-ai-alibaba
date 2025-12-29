@@ -7,10 +7,10 @@ spring:
   ai:
     # DashScope 配置（阿里云百炼）
     dashscope:
-      api-key: ${DASHSCOPE_API_KEY:your-api-key}
+      api-key: sk-b3a9369901434756aeca650643f68e20
       chat:
         options:
-          model: ${DASHSCOPE_MODEL:qwen-plus}
+          model: qwen-plus
     vectorstore:
       milvus:
         host: localhost
@@ -22,13 +22,15 @@ spring:
     alibaba:
       a2a:
         nacos:
-          server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
-          username: ${NACOS_USERNAME:nacos}
-          password: ${NACOS_PASSWORD:nacos}
+          server-addr: 127.0.0.1:8848
+          username: nacos
+          password: nacos
           discovery:
-            enabled: true  # 启用 A2A 服务发现，用于发现远程智能体
+#            enabled: true  # 启用 A2A 服务发现，用于发现远程智能体
+            enabled: false  # 启用 A2A 服务发现，用于发现远程智能体
           registry:
-            enabled: true  # 启用 Nacos Registry，将本地 Agent 注册到 Nacos
+#            enabled: true  # 启用 Nacos Registry，将本地 Agent 注册到 Nacos
+            enabled: false  # 启用 Nacos Registry，将本地 Agent 注册到 Nacos
         server:
           version: 1.0.0
           card:

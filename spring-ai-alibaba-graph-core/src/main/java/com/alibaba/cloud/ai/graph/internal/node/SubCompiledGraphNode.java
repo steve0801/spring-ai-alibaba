@@ -22,17 +22,24 @@ import com.alibaba.cloud.ai.graph.SubGraphNode;
 
 import java.util.Objects;
 
+	// 子编译图节点类，继承自Node并实现SubGraphNode接口
 public class SubCompiledGraphNode extends Node implements SubGraphNode {
 
+	// 子图的编译图实例
 	private final CompiledGraph subGraph;
 
+	// 构造函数，创建子编译图节点
 	public SubCompiledGraphNode(String id, CompiledGraph subGraph) {
+		// 调用父类构造函数，验证ID不为null，并创建子编译图节点动作工厂
 		super(Objects.requireNonNull(id, "id cannot be null"),
 				(config) -> new SubCompiledGraphNodeAction(id, config, subGraph));
+		// 初始化子图
 		this.subGraph = subGraph;
 	}
 
+	// 获取子图的方法
 	public StateGraph subGraph() {
+		// 返回编译图中的状态图
 		return subGraph.stateGraph;
 	}
 
