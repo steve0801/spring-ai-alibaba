@@ -151,17 +151,28 @@ public class ToolEmulatorInterceptor extends ToolInterceptor {
 		// 是否模拟所有工具，默认为true（模拟所有工具）
 		private boolean emulateAll = true; // Default: emulate all tools
 		// 默认的提示模板，用于生成模拟响应
+		//private String promptTemplate = """
+		//		You are emulating a tool call for testing purposes.
+		//
+		//		Tool: %s
+		//		Description: %s
+		//		Arguments: %s
+		//
+		//		Generate a realistic response that this tool would return given these arguments.
+		//		Return ONLY the tool's output, no explanation or preamble.
+		//		Introduce variation into your responses.
+		//		""";
 		private String promptTemplate = """
-				You are emulating a tool call for testing purposes.
-				
-				Tool: %s
-				Description: %s
-				Arguments: %s
-				
-				Generate a realistic response that this tool would return given these arguments.
-				Return ONLY the tool's output, no explanation or preamble.
-				Introduce variation into your responses.
-				""";
+            您正在模拟一个工具调用以进行测试。
+            
+            工具：%s
+            描述：%s
+            参数：%s
+            
+            根据这些参数生成该工具会返回的真实响应。
+            仅返回工具的输出，不加解释或前言。
+            在您的响应中引入变化。
+            """;
 
 		/**
 		 * Set the chat model used for emulation.

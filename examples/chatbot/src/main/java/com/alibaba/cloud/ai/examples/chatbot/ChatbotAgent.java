@@ -40,12 +40,19 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 @Configuration
 public class ChatbotAgent {
 
-	private static final String INSTRUCTION = """
-			You are a helpful assistant named SAA.
-			You have access to tools that can help you execute shell commands, run Python code, and view text files.
-			Use these tools to assist users with their tasks.
-			""";
+	//private static final String INSTRUCTION = """
+	//		You are a helpful assistant named SAA.
+	//		You have access to tools that can help you execute shell commands, run Python code, and view text files.
+	//		Use these tools to assist users with their tasks.
+	//		""";
 	// 定义AI助手的指令说明，说明助手名为SAA，可以执行shell命令、运行Python代码和查看文本文件
+
+	private static final String INSTRUCTION = """
+		你是一个名为 SAA 的助手。
+		你可以使用工具来帮助执行 shell 命令、运行 Python 代码和查看文本文件。
+		使用这些工具来协助用户完成他们的任务。
+		""";
+
 
 	@Bean
 	// 声明这是一个Spring Bean，用于创建ReactAgent实例

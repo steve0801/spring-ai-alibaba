@@ -31,18 +31,31 @@ import java.util.function.BiFunction;
  */
 public class GlobTool implements BiFunction<String, ToolContext, String> {
 
+	//public static final String DESCRIPTION = """
+	//		Find files matching a glob pattern.
+	//
+	//		Usage:
+	//		- Supports standard glob patterns: `*` (any characters), `**` (any directories), `?` (single character)
+	//		- Returns a list of absolute file paths that match the pattern
+	//
+	//		Examples:
+	//		- `**/*.java` - Find all Java files
+	//		- `*.txt` - Find all text files in root
+	//		- `/src/**/*.xml` - Find all XML files under /src
+	//		""";
 	public static final String DESCRIPTION = """
-			Find files matching a glob pattern.
-			
-			Usage:
-			- Supports standard glob patterns: `*` (any characters), `**` (any directories), `?` (single character)
-			- Returns a list of absolute file paths that match the pattern
-			
-			Examples:
-			- `**/*.java` - Find all Java files
-			- `*.txt` - Find all text files in root
-			- `/src/**/*.xml` - Find all XML files under /src
-			""";
+		查找匹配glob模式的文件。
+		
+		使用方法：
+		- 支持标准glob模式：`*`（任意字符）、`**`（任意目录）、`?`（单个字符）
+		- 返回匹配模式的绝对文件路径列表
+		
+		示例：
+		- `**/*.java` - 查找所有Java文件
+		- `*.txt` - 查找根目录下所有文本文件
+		- `/src/**/*.xml` - 查找/src目录下所有XML文件
+		""";
+
 
 	// 默认构造函数
 	public GlobTool() {

@@ -53,21 +53,38 @@ import static com.alibaba.cloud.ai.graph.agent.tools.WriteTodosTool.DEFAULT_TOOL
 public class TodoListInterceptor extends ModelInterceptor {
 
 	// 定义默认的系统提示信息，指导代理如何使用待办事项列表功能
+	//private static final String DEFAULT_SYSTEM_PROMPT = """
+	//		## `write_todos`
+	//
+	//		You have access to the `write_todos` tool to help you manage and plan complex objectives.
+	//		Use this tool for complex objectives to ensure that you are tracking each necessary step and giving the user visibility into your progress.
+	//		This tool is very helpful for planning complex objectives, and for breaking down these larger complex objectives into smaller steps.
+	//
+	//		It is critical that you mark todos as completed as soon as you are done with a step. Do not batch up multiple steps before marking them as completed.
+	//		For simple objectives that only require a few steps, it is better to just complete the objective directly and NOT use this tool.
+	//		Writing todos takes time and tokens, use it when it is helpful for managing complex many-step problems! But not for simple few-step requests.
+	//
+	//		## Important To-Do List Usage Notes to Remember
+	//		- The `write_todos` tool should never be called multiple times in parallel.
+	//		- Don't be afraid to revise the To-Do list as you go. New information may reveal new tasks that need to be done, or old tasks that are irrelevant.
+	//		""";
+
 	private static final String DEFAULT_SYSTEM_PROMPT = """
-			## `write_todos`
-			
-			You have access to the `write_todos` tool to help you manage and plan complex objectives.
-			Use this tool for complex objectives to ensure that you are tracking each necessary step and giving the user visibility into your progress.
-			This tool is very helpful for planning complex objectives, and for breaking down these larger complex objectives into smaller steps.
-			
-			It is critical that you mark todos as completed as soon as you are done with a step. Do not batch up multiple steps before marking them as completed.
-			For simple objectives that only require a few steps, it is better to just complete the objective directly and NOT use this tool.
-			Writing todos takes time and tokens, use it when it is helpful for managing complex many-step problems! But not for simple few-step requests.
-			
-			## Important To-Do List Usage Notes to Remember
-			- The `write_todos` tool should never be called multiple times in parallel.
-			- Don't be afraid to revise the To-Do list as you go. New information may reveal new tasks that need to be done, or old tasks that are irrelevant.
-			""";
+		## `write_todos`
+		
+		你可以使用 `write_todos` 工具来帮助管理和规划复杂目标。
+		对于复杂目标，请使用此工具以确保跟踪每个必要步骤并让用户了解你的进度。
+		此工具对于规划复杂目标以及将这些较大的复杂目标分解为更小的步骤非常有帮助。
+		
+		在完成一个步骤后立即将待办事项标记为已完成至关重要。不要在标记为已完成之前批量处理多个步骤。
+		对于只需几个步骤的简单目标，最好直接完成目标而**不**使用此工具。
+		编写待办事项需要时间和token，请在有助于管理复杂多步骤问题时使用它！而不是用于简单的几步请求。
+		
+		## 重要待办清单使用注意事项
+		- `write_todos` 工具不应并行调用多次。
+		- 不要害怕在过程中修订待办清单。新信息可能会揭示需要完成的新任务，或者使旧任务变得无关紧要。
+		""";
+
 
 	// 存储工具回调列表，包含待办事项工具
 	private final List<ToolCallback> tools;

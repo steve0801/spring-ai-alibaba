@@ -59,15 +59,25 @@ public class LargeResultEvictionInterceptor extends ToolInterceptor {
 	private static final String LARGE_RESULTS_DIR = System.getProperty("user.dir") + "/large_tool_results/";
 
 	// 工具结果过大时的提示消息模板
+	//private static final String TOO_LARGE_TOOL_MSG = """
+	//		Tool result too large, the result of this tool call %s was saved in the filesystem at this path: %s
+	//		You can read the result from the filesystem by using the read_file tool, but make sure to only read part of the result at a time.
+	//		You can do this by specifying an offset and limit in the read_file tool call.
+	//		For example, to read the first 100 lines, you can use the read_file tool with offset=0 and limit=100.
+	//
+	//		Here are the first 10 lines of the result:
+	//		%s
+	//		""";
 	private static final String TOO_LARGE_TOOL_MSG = """
-			Tool result too large, the result of this tool call %s was saved in the filesystem at this path: %s
-			You can read the result from the filesystem by using the read_file tool, but make sure to only read part of the result at a time.
-			You can do this by specifying an offset and limit in the read_file tool call.
-			For example, to read the first 100 lines, you can use the read_file tool with offset=0 and limit=100.
-			
-			Here are the first 10 lines of the result:
-			%s
-			""";
+		工具结果过大，此工具调用 %s 的结果已保存到文件系统中的此路径：%s
+		您可以使用 [read_file](file:///D:/Work/github/spring-ai-alibaba/examples/documentation/read_file) 工具从文件系统中读取结果，但请确保一次只读取部分结果。
+		您可以通过在 [read_file](file:///D:/Work/github/spring-ai-alibaba/examples/documentation/read_file) 工具调用中指定 offset 和 limit 来实现这一点。
+		例如，要读取前 100 行，可以使用 [read_file](file:///D:/Work/github/spring-ai-alibaba/examples/documentation/read_file) 工具并设置 offset=0 和 limit=100。
+		
+		以下是结果的前 10 行：
+		%s
+		""";
+
 
 	// 工具调用结果令牌限制阈值
 	private final Integer toolTokenLimitBeforeEvict;

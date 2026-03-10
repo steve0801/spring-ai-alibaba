@@ -34,24 +34,43 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
  */
 public class ReadFileTool implements BiFunction<ReadFileTool.ReadFileRequest, ToolContext, String> {
 
-	public static final String DESCRIPTION = """
-Reads a file from the filesystem. You can access any file directly by using this tool.
-Assume this tool is able to read all files on the machine. If the User provides a path to a file assume that path is valid. It is okay to read a file that does not exist; an error will be returned.
+//	public static final String DESCRIPTION = """
+//Reads a file from the filesystem. You can access any file directly by using this tool.
+//Assume this tool is able to read all files on the machine. If the User provides a path to a file assume that path is valid. It is okay to read a file that does not exist; an error will be returned.
+//
+//Usage:
+//- The file_path parameter must be an absolute path, not a relative path
+//- By default, it reads up to 500 lines starting from the beginning of the file
+//- **IMPORTANT for large files and codebase exploration**: Use pagination with offset and limit parameters to avoid context overflow
+//  - First scan: read_file(path, limit=100) to see file structure
+//  - Read more sections: read_file(path, offset=100, limit=200) for next 200 lines
+//  - Only omit limit (read full file) when necessary for editing
+//- Specify offset and limit: read_file(path, offset=0, limit=100) reads first 100 lines
+//- Any lines longer than 2000 characters will be truncated
+//- Results are returned using cat -n format, with line numbers starting at 1
+//- You have the capability to call multiple tools in a single response. It is always better to speculatively read multiple files as a batch that are potentially useful.
+//- If you read a file that exists but has empty contents you will receive a system reminder warning in place of file contents.
+//			- You should almost ALWAYS use the list_files tool before using this tool to verify the file path.
+//			""";
 
-Usage:
-- The file_path parameter must be an absolute path, not a relative path
-- By default, it reads up to 500 lines starting from the beginning of the file
-- **IMPORTANT for large files and codebase exploration**: Use pagination with offset and limit parameters to avoid context overflow
-  - First scan: read_file(path, limit=100) to see file structure
-  - Read more sections: read_file(path, offset=100, limit=200) for next 200 lines
-  - Only omit limit (read full file) when necessary for editing
-- Specify offset and limit: read_file(path, offset=0, limit=100) reads first 100 lines
-- Any lines longer than 2000 characters will be truncated
-- Results are returned using cat -n format, with line numbers starting at 1
-- You have the capability to call multiple tools in a single response. It is always better to speculatively read multiple files as a batch that are potentially useful.
-- If you read a file that exists but has empty contents you will receive a system reminder warning in place of file contents.
-			- You should almost ALWAYS use the list_files tool before using this tool to verify the file path.
-			""";
+	public static final String DESCRIPTION = """
+            从文件系统中读取文件。您可以使用此工具直接访问任何文件。
+            假设此工具能够读取机器上的所有文件。如果用户提供了一个文件路径，请假定该路径是有效的。读取不存在的文件是可以的；此时将返回一个错误。
+
+            用法：
+            - file_path 参数必须是绝对路径，而不是相对路径
+            - 默认情况下，它从文件开头读取最多500行
+            - **对于大文件和代码库探索非常重要**：使用 offset 和 limit 参数进行分页以避免上下文溢出
+              - 第一次扫描：read_file(path, limit=100) 以查看文件结构
+              - 读取更多部分：read_file(path, offset=100, limit=200) 读取接下来的200行
+              - 仅在必要时省略 limit（读取整个文件）进行编辑
+            - 指定 offset 和 limit：read_file(path, offset=0, limit=100) 读取前100行
+            - 任何超过2000个字符的行将被截断
+            - 结果将以 cat -n 格式返回，行号从1开始
+            - 您可以在单个响应中调用多个工具。最好推测性地批量读取可能有用的多个文件。
+            - 如果您读取的文件存在但内容为空，您将收到一个系统提醒警告，而不是文件内容。
+            - 几乎总是应该在使用此工具之前使用 list_files 工具来验证文件路径。
+            """;
 
 	public ReadFileTool() {
 	}

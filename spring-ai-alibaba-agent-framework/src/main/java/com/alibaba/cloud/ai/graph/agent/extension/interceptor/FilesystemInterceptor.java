@@ -78,20 +78,36 @@ public class FilesystemInterceptor extends ModelInterceptor {
 	private static final int DEFAULT_READ_OFFSET = 0;
 	private static final int DEFAULT_READ_LIMIT = 500;
 
+	//private static final String DEFAULT_SYSTEM_PROMPT = """
+	//		## Filesystem Tools `ls`, `read_file`, `write_file`, `edit_file`, `glob`, `grep`
+	//
+	//		You have access to a filesystem which you can interact with using these tools.
+	//		All file paths must start with a /.
+	//		Avoid using the root path because you might not have permission to read/write there.
+	//
+	//		- ls: list files in a directory (requires absolute path)
+	//		- read_file: read a file from the filesystem
+	//		- write_file: write to a file in the filesystem
+	//		- edit_file: edit a file in the filesystem
+	//		- glob: find files matching a pattern (e.g., "**/*.py")
+	//		- grep: search for text within files
+	//		""";
+
 	private static final String DEFAULT_SYSTEM_PROMPT = """
-			## Filesystem Tools `ls`, `read_file`, `write_file`, `edit_file`, `glob`, `grep`
-			
-			You have access to a filesystem which you can interact with using these tools.
-			All file paths must start with a /.
-			Avoid using the root path because you might not have permission to read/write there.
-			
-			- ls: list files in a directory (requires absolute path)
-			- read_file: read a file from the filesystem
-			- write_file: write to a file in the filesystem
-			- edit_file: edit a file in the filesystem
-			- glob: find files matching a pattern (e.g., "**/*.py")
-			- grep: search for text within files
-			""";
+		## 文件系统工具 `ls`, `read_file`, `write_file`, `edit_file`, `glob`, `grep`
+		
+		你可以访问一个文件系统，可以通过这些工具与之交互。
+		所有文件路径必须以 / 开头。
+		避免使用根路径，因为你可能没有在那里读写文件的权限。
+		
+		- ls: 列出目录中的文件（需要绝对路径）
+		- read_file: 从文件系统中读取文件
+		- write_file: 向文件系统中写入文件
+		- edit_file: 编辑文件系统中的文件
+		- glob: 查找匹配模式的文件（例如，"**/*.py"）
+		- grep: 在文件中搜索文本
+		""";
+
 
 	private final List<ToolCallback> tools;
 	private final String systemPrompt;

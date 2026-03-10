@@ -33,18 +33,30 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
  */
 public class GrepTool implements BiFunction<GrepTool.GrepRequest, ToolContext, String> {
 
+	//public static final String DESCRIPTION = """
+	//		Search for a pattern in files.
+	//
+	//		Usage:
+	//		- The pattern parameter is the text to search for (literal string, not regex)
+	//		- The path parameter filters which directory to search in
+	//		- The glob parameter accepts a glob pattern to filter which files to search
+	//
+	//		Examples:
+	//		- Search all files: `grep(pattern="TODO")`
+	//		- The search is case-sensitive by default.
+	//		""";
 	public static final String DESCRIPTION = """
-			Search for a pattern in files.
-			
-			Usage:
-			- The pattern parameter is the text to search for (literal string, not regex)
-			- The path parameter filters which directory to search in
-			- The glob parameter accepts a glob pattern to filter which files to search
-			
-			Examples:
-			- Search all files: `grep(pattern="TODO")`
-			- The search is case-sensitive by default.
-			""";
+            在文件中搜索指定模式。
+            
+            用法：
+            - pattern 参数是要搜索的文本（字面字符串，不是正则表达式）
+            - path 参数用于过滤要搜索的目录
+            - glob 参数接受一个 glob 模式来过滤要搜索的文件
+            
+            示例：
+            - 搜索所有文件：`grep(pattern="TODO")`
+            - 默认情况下，搜索是区分大小写的。
+            """;
 
 	// 默认构造函数
 	public GrepTool() {

@@ -33,16 +33,28 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
  */
 public class EditFileTool implements BiFunction<EditFileTool.EditFileRequest, ToolContext, String> {
 
+	//public static final String DESCRIPTION = """
+	//		Performs exact string replacements in files.
+	//
+	//		Usage:
+	//		- You must use your `read_file` tool at least once before editing.
+	//		- When editing text from read_file output, preserve exact indentation
+	//		- ALWAYS prefer editing existing files. NEVER write new files unless explicitly required.
+	//		- The edit will FAIL if `old_string` is not unique in the file.
+	//		- After editing, verify the changes by using the read_file tool.
+	//		""";
+
 	public static final String DESCRIPTION = """
-			Performs exact string replacements in files.
-			
-			Usage:
-			- You must use your `read_file` tool at least once before editing.
-			- When editing text from read_file output, preserve exact indentation
-			- ALWAYS prefer editing existing files. NEVER write new files unless explicitly required.
-			- The edit will FAIL if `old_string` is not unique in the file.
-			- After editing, verify the changes by using the read_file tool.
-			""";
+		在文件中执行精确的字符串替换。
+		
+		使用方法：
+		- 编辑前必须至少使用一次 `read_file` 工具。
+		- 编辑 [read_file](file:///D:/Work/github/spring-ai-alibaba/examples/documentation/read_file) 输出的文本时，要保持确切的缩进
+		- 始终优先编辑现有文件。除非明确要求，否则绝不要创建新文件。
+		- 如果 `old_string` 在文件中不唯一，则编辑将失败。
+		- 编辑后，使用 [read_file](file:///D:/Work/github/spring-ai-alibaba/examples/documentation/read_file) 工具验证更改。
+		""";
+
 
 	// 默认构造函数
 	public EditFileTool() {

@@ -38,22 +38,39 @@ import org.slf4j.LoggerFactory;
  */
 public class PythonTool implements BiFunction<PythonTool.PythonRequest, ToolContext, String> {
 
-	public static final String DESCRIPTION = """
-			Executes Python code and returns the result.
-			
-			Usage:
-			- The code parameter must be valid Python code
-			- The tool will execute the code and return the output
-			- If the code produces a result, it will be returned as a string
-			- Errors will be caught and returned as error messages
-			- The execution is sandboxed for security
-			
-			Examples:
-			- Simple calculation: code = "2 + 2" returns "4"
-			- String operations: code = "'Hello, ' + 'World'" returns "Hello, World"
-			- List operations: code = "[1, 2, 3][0]" returns "1"
-			""";
+	//public static final String DESCRIPTION = """
+	//		Executes Python code and returns the result.
+	//
+	//		Usage:
+	//		- The code parameter must be valid Python code
+	//		- The tool will execute the code and return the output
+	//		- If the code produces a result, it will be returned as a string
+	//		- Errors will be caught and returned as error messages
+	//		- The execution is sandboxed for security
+	//
+	//		Examples:
+	//		- Simple calculation: code = "2 + 2" returns "4"
+	//		- String operations: code = "'Hello, ' + 'World'" returns "Hello, World"
+	//		- List operations: code = "[1, 2, 3][0]" returns "1"
+	//		""";
 	// 定义工具描述信息，包括功能说明、使用方法和示例
+
+	public static final String DESCRIPTION = """
+		执行Python代码并返回结果。
+		
+		使用方法：
+		- code参数必须是有效的Python代码
+		- 工具将执行代码并返回输出
+		- 如果代码产生结果，将以字符串形式返回
+		- 错误会被捕获并作为错误消息返回
+		- 执行过程经过沙箱处理以确保安全
+		
+		示例：
+		- 简单计算：code = "2 + 2" 返回 "4"
+		- 字符串操作：code = "'Hello, ' + 'World'" 返回 "Hello, World"
+		- 列表操作：code = "[1, 2, 3][0]" 返回 "1"
+		""";
+
 
 	private static final Logger log = LoggerFactory.getLogger(PythonTool.class);
 	// 创建日志记录器实例，用于记录执行过程中的日志信息

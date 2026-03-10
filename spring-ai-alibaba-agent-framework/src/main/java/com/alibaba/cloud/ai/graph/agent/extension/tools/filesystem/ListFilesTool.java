@@ -30,15 +30,26 @@ import java.util.function.BiFunction;
  */
 public class ListFilesTool implements BiFunction<String, ToolContext, String> {
 
+	//public static final String DESCRIPTION = """
+	//		Lists all files in the filesystem, filtering by directory.
+	//
+	//		Usage:
+	//		- The path parameter must be an absolute path, not a relative path
+	//		- The list_files tool will return a list of all files in the specified directory.
+	//		- This is very useful for exploring the file system and finding the right file to read or edit.
+	//		- You should almost ALWAYS use this tool before using the Read or Edit tools.
+	//		""";
+
 	public static final String DESCRIPTION = """
-			Lists all files in the filesystem, filtering by directory.
-			
-			Usage:
-			- The path parameter must be an absolute path, not a relative path
-			- The list_files tool will return a list of all files in the specified directory.
-			- This is very useful for exploring the file system and finding the right file to read or edit.
-			- You should almost ALWAYS use this tool before using the Read or Edit tools.
-			""";
+		列出文件系统中的所有文件，按目录筛选。
+		
+		使用方法：
+		- path参数必须是绝对路径，不能是相对路径
+		- list_files 工具将返回指定目录中的所有文件列表。
+		- 这对于探索文件系统和查找要读取或编辑的正确文件非常有用。
+		- 几乎在使用读取或编辑工具之前都应该使用此工具。
+		""";
+
 
 	// 默认构造函数
 	public ListFilesTool() {

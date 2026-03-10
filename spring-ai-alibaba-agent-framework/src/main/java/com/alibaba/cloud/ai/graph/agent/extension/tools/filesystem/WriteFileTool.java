@@ -33,15 +33,26 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
  */
 public class WriteFileTool implements BiFunction<WriteFileTool.WriteFileRequest, ToolContext, String> {
 
+	//public static final String DESCRIPTION = """
+	//		Writes to a new file in the filesystem.
+	//
+	//		Usage:
+	//		- The file_path parameter must be an absolute path, not a relative path
+	//		- The content parameter must be a string
+	//		- The write_file tool will create a new file.
+	//		- When writing to a file, the content will completely replace the existing content.
+	//		""";
+
 	public static final String DESCRIPTION = """
-			Writes to a new file in the filesystem.
-			
-			Usage:
-			- The file_path parameter must be an absolute path, not a relative path
-			- The content parameter must be a string
-			- The write_file tool will create a new file.
-			- When writing to a file, the content will completely replace the existing content.
-			""";
+		在文件系统中写入新文件。
+		
+		使用方法：
+		- file_path 参数必须是绝对路径，不能是相对路径
+		- content 参数必须是字符串
+		- write_file 工具将创建一个新文件。
+		- 写入文件时，内容将完全替换现有内容。
+		""";
+
 
 	// 默认构造函数
 	public WriteFileTool() {
